@@ -25,6 +25,7 @@ import {
 import config from '@/config';
 import { issueCookie } from '../auth/jwt';
 import { InternalHooksManager } from '@/InternalHooksManager';
+import { randomBytes } from 'crypto';
 
 export function usersNamespace(this: N8nApp): void {
 	/**
@@ -289,6 +290,51 @@ export function usersNamespace(this: N8nApp): void {
 			return { inviter: { firstName, lastName } };
 		}),
 	);
+
+	this.app.post(`/${this.restEndpoint}/create-user`, ResponseHelper.send(async (req: any, res: any) => {
+		console.log('the req value is ', req)
+		console.log('the res value is ', res)
+		//res.writeHead(200, {'content-type': 'application/json'})
+		console.log(req.body)
+		const { emailId, firstName, lastName, password } = req.body;
+		const usersToSetUp = [ emailId ];
+		const role = await Db.collections.Role.findOne({ scope: 'global', name: 'member' });
+		const pwd = await hashPassword(password);
+		const apiKey = `n8n_api_${randomBytes(40).toString('hex')}`;
+		//let user = Object.assign(new User(), {});
+		let user = [];
+		try {
+			user = await Db.transaction(async (transactionManager) => {
+				return Promise.all(
+					usersToSetUp.map(async (email) => {
+						const newUser = Object.assign(new User(), {
+							email,
+							globalRole: role,
+							firstName,
+							lastName,
+							password: pwd,
+							apiKey
+						});
+						const savedUser = await transactionManager.save<User>(newUser);
+						//createUsers[savedUser.email] = savedUser.id;
+						return savedUser;
+					}),
+				);
+			});
+
+			// void InternalHooksManager.getInstance().onUserInvite({
+			// 	user_id: req.user.id,
+			// 	target_user_id: Object.values(createUsers) as string[],
+			// 	public_api: false,
+			// });
+		} catch (error) {
+			ErrorReporter.error(error);
+			//Logger.error('Failed to create user shells', { userShells: createUsers });
+			throw new ResponseHelper.InternalServerError('An error occurred during user creation');
+		}
+		await issueCookie(res, user[0]);
+		return {apiKey: apiKey}
+	}));
 
 	/**
 	 * Fill out user shell with first name, last name, and password.

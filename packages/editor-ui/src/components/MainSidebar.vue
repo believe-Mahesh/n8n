@@ -1,5 +1,5 @@
 <template>
-	<div id="side-menu" :class="{
+	<div id="side-menu" v-if=false :class="{
 		['side-menu']: true,
 		[$style.sideMenu]: true,
 		[$style.sideMenuCollapsed]: isCollapsed

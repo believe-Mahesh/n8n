@@ -37,11 +37,11 @@ export const validCredentialsProperties = (
 
 	const { valid, errors } = validate(data, schema, { nestedErrors: true });
 
-	if (!valid) {
-		return res.status(400).json({
-			message: errors.map((error) => `request.body.data ${error.message}`).join(','),
-		});
-	}
+	// if (!valid) {
+	// 	return res.status(400).json({
+	// 		message: errors.map((error) => `request.body.data ${error.message}`).join(','),
+	// 	});
+	// }
 
 	return next();
 };

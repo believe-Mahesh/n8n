@@ -98,7 +98,8 @@ oauth2CredentialController.get(
 			credentialType.includes('OAuth2') &&
 			!['oAuth2Api'].includes(credentialType)
 		) {
-			delete decryptedDataOriginal.scope;
+			//delete decryptedDataOriginal.scope;
+			//console.log('the value of scope in delete block is', decryptedDataOriginal.scope)
 		}
 
 		const oauthCredentials = credentialsHelper.applyDefaultsAndOverwrites(
@@ -116,7 +117,7 @@ oauth2CredentialController.get(
 			cid: req.query.id,
 		};
 		const stateEncodedStr = Buffer.from(JSON.stringify(state)).toString('base64');
-
+		console.log('the value of oauthCredentials are ', oauthCredentials);
 		const oAuthOptions: ClientOAuth2.Options = {
 			clientId: get(oauthCredentials, 'clientId') as string,
 			clientSecret: get(oauthCredentials, 'clientSecret', '') as string,
@@ -167,6 +168,7 @@ oauth2CredentialController.get(
 			userId: req.user.id,
 			credentialId,
 		});
+		console.log('the value of returnUrl is', returnUri);
 		return returnUri;
 	}),
 );

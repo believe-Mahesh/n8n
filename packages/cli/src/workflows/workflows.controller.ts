@@ -24,6 +24,7 @@ import { isBelowOnboardingThreshold } from '@/WorkflowHelpers';
 import { EEWorkflowController } from './workflows.controller.ee';
 import { WorkflowsService } from './workflows.services';
 import { whereClause } from '@/UserManagement/UserManagementHelper';
+import { DATAFLO_API_URL } from '@/constants';
 
 export const workflowsController = express.Router();
 
@@ -75,7 +76,18 @@ workflowsController.post(
 
 		await Db.transaction(async (transactionManager) => {
 			savedWorkflow = await transactionManager.save<WorkflowEntity>(newWorkflow);
-
+			const requestOptions = {
+				workflow_id: savedWorkflow.id.toString(),
+				workflow_name: savedWorkflow.name,
+				created_by: req.user.email,
+				created_at: savedWorkflow.createdAt,
+				active: savedWorkflow.active,
+				shared: savedWorkflow.shared,
+				workflow_nodes: savedWorkflow.nodes,
+				workflow_settings: savedWorkflow.settings,
+				connections: savedWorkflow.connections,
+			};
+			const response = await axios.post(DATAFLO_API_URL + "/workflow", requestOptions);
 			const role = await Db.collections.Role.findOneOrFail({
 				name: 'owner',
 				scope: 'workflow',
@@ -254,7 +266,19 @@ workflowsController.patch(
 			true,
 			['owner'],
 		);
-
+		const requestOptions = {
+			workflow_id: updatedWorkflow.id.toString(),
+			workflow_name: updatedWorkflow.name,
+			created_by: req.user.email,
+			created_at: updatedWorkflow.createdAt,
+			active: updatedWorkflow.active,
+			shared: updatedWorkflow.shared,
+			workflow_nodes: updatedWorkflow.nodes,
+			workflow_settings: updatedWorkflow.settings,
+			connections: updatedWorkflow.connections,
+		};
+		const response = await axios.patch(DATAFLO_API_URL + "/workflow", requestOptions);
+		
 		const { id, ...remainder } = updatedWorkflow;
 
 		return {
@@ -301,6 +325,7 @@ workflowsController.delete(
 		}
 
 		await Db.collections.Workflow.delete(workflowId);
+		const response = await axios.delete(DATAFLO_API_URL + "/workflow?workflow_id=" + workflowId);
 
 		void InternalHooksManager.getInstance().onWorkflowDeleted(req.user.id, workflowId, false);
 		await externalHooks.run('workflow.afterDelete', [workflowId]);

@@ -100,7 +100,7 @@ oauth2CredentialController.get(
 			credentialType.includes('OAuth2') &&
 			!genericOAuth2.includes(credentialType)
 		) {
-			//delete decryptedDataOriginal.scope;
+			delete decryptedDataOriginal.scope;
 			//console.log('the value of scope in delete block is', decryptedDataOriginal.scope)
 		}
 

@@ -24,7 +24,10 @@ import { isBelowOnboardingThreshold } from '@/WorkflowHelpers';
 import { EEWorkflowController } from './workflows.controller.ee';
 import { WorkflowsService } from './workflows.services';
 import { whereClause } from '@/UserManagement/UserManagementHelper';
-import { DATAFLO_API_URL } from '@/constants';
+import { AUTH_COOKIE_NAME, DATAFLO_API_URL } from '@/constants';
+import { JwtPayload } from '@/UserManagement/Interfaces';
+import { Exception } from 'handlebars';
+import jwt from 'jsonwebtoken';
 
 export const workflowsController = express.Router();
 
@@ -76,10 +79,18 @@ workflowsController.post(
 
 		await Db.transaction(async (transactionManager) => {
 			savedWorkflow = await transactionManager.save<WorkflowEntity>(newWorkflow);
+			const authCookie = req.cookies?.[AUTH_COOKIE_NAME] ?? '';
+			const jwtPayload = jwt.verify(authCookie, config.getEnv('userManagement.jwtSecret')) as JwtPayload;
+			const user_email = jwtPayload.additionalParams?.user_email ?? undefined;
+			const entity_key = jwtPayload.additionalParams?.entity_key ?? undefined;
+			if (!user_email || !entity_key)
+				throw new Exception("Cannot create workflow due to creation params missing.");
+			
 			const requestOptions = {
 				workflow_id: savedWorkflow.id.toString(),
 				workflow_name: savedWorkflow.name,
-				created_by: req.user.email,
+				created_by: user_email,
+				entity_key: entity_key,
 				created_at: savedWorkflow.createdAt,
 				active: savedWorkflow.active,
 				shared: savedWorkflow.shared,

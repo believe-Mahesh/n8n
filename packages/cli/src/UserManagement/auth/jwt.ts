@@ -5,11 +5,11 @@ import { Response } from 'express';
 import { createHash } from 'crypto';
 import * as Db from '@/Db';
 import { AUTH_COOKIE_NAME } from '@/constants';
-import { JwtPayload, JwtToken } from '../Interfaces';
+import { IAdditionalParams, JwtPayload, JwtToken } from '../Interfaces';
 import { User } from '@db/entities/User';
 import config from '@/config';
 
-export function issueJWT(user: User): JwtToken {
+export function issueJWT(user: User, additionalParams?: IAdditionalParams): JwtToken {
 	const { id, email, password } = user;
 	const expiresIn = 7 * 86400000; // 7 days
 
@@ -17,6 +17,7 @@ export function issueJWT(user: User): JwtToken {
 		id,
 		email,
 		password: password ?? null,
+		additionalParams: additionalParams ?? null,
 	};
 
 	if (password) {
@@ -60,8 +61,8 @@ export async function resolveJwt(token: string): Promise<User> {
 	return resolveJwtContent(jwtPayload);
 }
 
-export async function issueCookie(res: Response, user: User): Promise<void> {
-	const userData = issueJWT(user);
+export async function issueCookie(res: Response, user: User, additionalParams?: IAdditionalParams): Promise<void> {
+	const userData = issueJWT(user, additionalParams);
 	res.cookie(AUTH_COOKIE_NAME, userData.token, {
 		maxAge: userData.expiresIn,
 		httpOnly: true,

@@ -50,7 +50,7 @@ export function authenticationMethods(this: N8nApp): void {
 				entity_key: entity_key,
 				user_email: user_email
 			};
-			await issueCookie(res, user);
+			await issueCookie(res, user, additionalParam);
 
 			return sanitizeUser(user);
 		}),

@@ -1922,7 +1922,7 @@ export class Hubspot implements INodeType {
 							if (additionalFields.includeMergeAudits) {
 								qs.includeMergeAudits = additionalFields.includeMergeAudits as boolean;
 							}
-							const endpoint = `/companies/v2/companies/${companyId}`;
+							const endpoint = `/companies/v2/companies/${companyId}?properties='hubspot_owner_id'`;
 							responseData = await hubspotApiRequest.call(this, 'GET', endpoint, {}, qs);
 						}
 						//https://developers.hubspot.com/docs/methods/companies/get-all-companies
@@ -2007,6 +2007,36 @@ export class Hubspot implements INodeType {
 								responseData = await hubspotApiRequest.call(this, 'POST', endpoint, body);
 								responseData = responseData.results;
 							}
+						}
+
+						if(operation === 'searchByName') {
+							const name = this.getNodeParameter('name', i) as string;
+							//const returnAll = this.getNodeParameter('returnAll', 0);
+							const endpoint = '/crm/v3/objects/companies/search';
+							const body: IDataObject = {
+								requestOptions: {},
+							};
+							const filter = {
+								operator: "EQ",
+								value: name,
+								propertyName: "name"
+							}
+							const filters = [filter];
+
+							const filterGroups = [{
+								filters: filters
+							}];
+							body.filterGroups = filterGroups;
+							console.log('the body is ', body)
+
+							responseData = await hubspotApiRequestAllItems.call(
+								this,
+								'results',
+								'POST',
+								endpoint,
+								body,
+							);
+
 						}
 						//https://developers.hubspot.com/docs/methods/companies/delete_company
 						if (operation === 'delete') {

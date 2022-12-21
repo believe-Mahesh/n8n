@@ -60,6 +60,12 @@ export const companyOperations: INodeProperties[] = [
 				description: 'Update a company',
 				action: 'Update a company',
 			},
+			{
+				name: 'Search By Name',
+				value: 'searchByName',
+				description: 'Search Companies by name',
+				action: 'Search for a company by name',
+			}
 		],
 		default: 'create',
 	},
@@ -1054,4 +1060,20 @@ export const companyFields: INodeProperties[] = [
 			},
 		],
 	},
+	/* -------------------------------------------------------------------------- */
+	/*                            company:searchByName                          */
+	/* -------------------------------------------------------------------------- */
+	{
+		displayName: 'Name',
+		name: 'name',
+		type: 'string',
+		displayOptions: {
+			show: {
+				resource: ['company'],
+				operation: ['searchByName'],
+			},
+		},
+		required: true,
+		default: '',
+	}
 ];

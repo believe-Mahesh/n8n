@@ -249,6 +249,8 @@ export type LoginRequest = AuthlessRequest<
 	{
 		email: string;
 		password: string;
+		entity_key: string | null;
+		user_email: string | null;
 	}
 >;
 

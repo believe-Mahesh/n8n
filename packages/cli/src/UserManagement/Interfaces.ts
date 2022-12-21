@@ -11,6 +11,11 @@ export interface JwtPayload {
 	id: string;
 	email: string | null;
 	password: string | null;
+	additionalParams?: IAdditionalParams | null;
+}
+export interface IAdditionalParams {
+	entity_key: string | null;
+	user_email: string | null;
 }
 
 export interface PublicUser {

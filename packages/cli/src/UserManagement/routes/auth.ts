@@ -6,7 +6,7 @@ import * as Db from '@/Db';
 import * as ResponseHelper from '@/ResponseHelper';
 import { AUTH_COOKIE_NAME } from '@/constants';
 import { issueCookie, resolveJwt } from '../auth/jwt';
-import { N8nApp, PublicUser } from '../Interfaces';
+import { IAdditionalParams, N8nApp, PublicUser } from '../Interfaces';
 import { compareHash, sanitizeUser } from '../UserManagementHelper';
 import { User } from '@db/entities/User';
 import type { LoginRequest } from '@/requests';
@@ -21,7 +21,7 @@ export function authenticationMethods(this: N8nApp): void {
 	this.app.post(
 		`/${this.restEndpoint}/login`,
 		ResponseHelper.send(async (req: LoginRequest, res: Response): Promise<PublicUser> => {
-			const { email, password } = req.body;
+			const { email, password, entity_key, user_email } = req.body;
 			if (!email) {
 				throw new Error('Email is required to log in');
 			}
@@ -45,8 +45,12 @@ export function authenticationMethods(this: N8nApp): void {
 			if (!user?.password || !(await compareHash(req.body.password, user.password))) {
 				throw new ResponseHelper.AuthError('Wrong username or password. Do you have caps lock on?');
 			}
-
-			await issueCookie(res, user);
+			
+			var additionalParam: IAdditionalParams = {
+				entity_key: entity_key,
+				user_email: user_email
+			};
+			await issueCookie(res, user, additionalParam);
 
 			return sanitizeUser(user);
 		}),

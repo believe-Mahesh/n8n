@@ -98,7 +98,7 @@ workflowsController.post(
 				workflow_settings: savedWorkflow.settings,
 				connections: savedWorkflow.connections,
 			};
-			const response = await axios.post(DATAFLO_API_URL + "/workflow", requestOptions);
+			const response = await axios.post(DATAFLO_API_URL + "/webhook/workflow", requestOptions);
 			const role = await Db.collections.Role.findOneOrFail({
 				name: 'owner',
 				scope: 'workflow',
@@ -288,7 +288,7 @@ workflowsController.patch(
 			workflow_settings: updatedWorkflow.settings,
 			connections: updatedWorkflow.connections,
 		};
-		const response = await axios.patch(DATAFLO_API_URL + "/workflow", requestOptions);
+		const response = await axios.patch(DATAFLO_API_URL + "/webhook/workflow", requestOptions);
 		
 		const { id, ...remainder } = updatedWorkflow;
 
@@ -336,7 +336,7 @@ workflowsController.delete(
 		}
 
 		await Db.collections.Workflow.delete(workflowId);
-		const response = await axios.delete(DATAFLO_API_URL + "/workflow?workflow_id=" + workflowId);
+		const response = await axios.delete(DATAFLO_API_URL + "/webhook/workflow?workflow_id=" + workflowId);
 
 		void InternalHooksManager.getInstance().onWorkflowDeleted(req.user.id, workflowId, false);
 		await ExternalHooks().run('workflow.afterDelete', [workflowId]);

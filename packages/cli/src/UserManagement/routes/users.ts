@@ -294,7 +294,8 @@ export function usersNamespace(this: N8nApp): void {
 
 	this.app.get(`/${this.restEndpoint}/authentication`, ResponseHelper.send(async (req: any, res: any) => {
 		const { token } = req.query;
-		await setCookie(res, token)
+		await setCookie(res, token);
+		return {message: "success"};
 	}));
 
 

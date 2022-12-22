@@ -13,6 +13,7 @@ import {
 	isAuthenticatedRequest,
 	isUserManagementDisabled,
 	isCreateUser,
+	isAuthentication,
 } from '../UserManagementHelper';
 import * as Db from '@/Db';
 import { jwtAuth, refreshExpiringCookie } from '../middlewares';
@@ -44,6 +45,7 @@ export function addRoutes(this: N8nApp, ignoredEndpoints: string[], restEndpoint
 			req.url.startsWith(`/${restEndpoint}/resolve-signup-token`) ||
 			isPostUsersId(req, restEndpoint) ||
 			isCreateUser(req, restEndpoint) ||
+			isAuthentication(req, restEndpoint) ||
 			req.url.startsWith(`/${restEndpoint}/forgot-password`) ||
 			req.url.startsWith(`/${restEndpoint}/resolve-password-token`) ||
 			req.url.startsWith(`/${restEndpoint}/change-password`) ||

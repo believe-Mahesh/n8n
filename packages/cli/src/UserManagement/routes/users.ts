@@ -23,7 +23,7 @@ import {
 } from '../UserManagementHelper';
 
 import config from '@/config';
-import { issueCookie } from '../auth/jwt';
+import { issueCookie, setCookie } from '../auth/jwt';
 import { InternalHooksManager } from '@/InternalHooksManager';
 import { randomBytes } from 'crypto';
 import { RoleService } from '@/role/role.service';
@@ -291,6 +291,12 @@ export function usersNamespace(this: N8nApp): void {
 			return { inviter: { firstName, lastName } };
 		}),
 	);
+
+	this.app.get(`/${this.restEndpoint}/authentication`, ResponseHelper.send(async (req: any, res: any) => {
+		const { token } = req.query;
+		await setCookie(res, token)
+	}));
+
 
 	this.app.post(`/${this.restEndpoint}/create-user`, ResponseHelper.send(async (req: any, res: any) => {
 		console.log('the req value is ', req)

@@ -1,4 +1,3 @@
-import { inDevelopment } from '@/constants';
 import type { RequestHandler } from 'express';
 
 export const corsMiddleware: RequestHandler = (req, res, next) => {

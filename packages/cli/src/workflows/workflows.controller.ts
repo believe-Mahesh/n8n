@@ -127,9 +127,9 @@ workflowsController.post(
 		}
 
 		await ExternalHooks().run('workflow.afterCreate', [savedWorkflow]);
-		void InternalHooksManager.getInstance().onWorkflowCreated(req.user.id, newWorkflow, false);
+		void InternalHooksManager.getInstance().onWorkflowCreated(req.user, newWorkflow, false);
 
-		return WorkflowsService.entityToResponse(savedWorkflow);
+		return savedWorkflow;
 	}),
 );
 
@@ -139,8 +139,7 @@ workflowsController.post(
 workflowsController.get(
 	'/',
 	ResponseHelper.send(async (req: WorkflowRequest.GetAll) => {
-		const workflows = await WorkflowsService.getMany(req.user, req.query.filter);
-		return workflows.map((workflow) => WorkflowsService.entityToResponse(workflow));
+		return WorkflowsService.getMany(req.user, req.query.filter);
 	}),
 );
 
@@ -148,7 +147,7 @@ workflowsController.get(
  * GET /workflows/new
  */
 workflowsController.get(
-	`/new`,
+	'/new',
 	ResponseHelper.send(async (req: WorkflowRequest.NewName) => {
 		const requestedName =
 			req.query.name && req.query.name !== ''
@@ -171,14 +170,14 @@ workflowsController.get(
  * GET /workflows/from-url
  */
 workflowsController.get(
-	`/from-url`,
+	'/from-url',
 	ResponseHelper.send(async (req: express.Request): Promise<IWorkflowResponse> => {
 		if (req.query.url === undefined) {
-			throw new ResponseHelper.BadRequestError(`The parameter "url" is missing!`);
+			throw new ResponseHelper.BadRequestError('The parameter "url" is missing!');
 		}
 		if (!/^http[s]?:\/\/.*\.json$/i.exec(req.query.url as string)) {
 			throw new ResponseHelper.BadRequestError(
-				`The parameter "url" is not valid! It does not seem to be a URL pointing to a n8n workflow JSON file.`,
+				'The parameter "url" is not valid! It does not seem to be a URL pointing to a n8n workflow JSON file.',
 			);
 		}
 		let workflowData: IWorkflowResponse | undefined;
@@ -186,7 +185,7 @@ workflowsController.get(
 			const { data } = await axios.get<IWorkflowResponse>(req.query.url as string);
 			workflowData = data;
 		} catch (error) {
-			throw new ResponseHelper.BadRequestError(`The URL does not point to valid JSON file!`);
+			throw new ResponseHelper.BadRequestError('The URL does not point to valid JSON file!');
 		}
 
 		// Do a very basic check if it is really a n8n-workflow-json
@@ -199,7 +198,7 @@ workflowsController.get(
 			Array.isArray(workflowData.connections)
 		) {
 			throw new ResponseHelper.BadRequestError(
-				`The data in the file does not seem to be a n8n workflow JSON file!`,
+				'The data in the file does not seem to be a n8n workflow JSON file!',
 			);
 		}
 
@@ -241,7 +240,7 @@ workflowsController.get(
 			);
 		}
 
-		return WorkflowsService.entityToResponse(shared.workflow);
+		return shared.workflow;
 	}),
 );
 
@@ -250,7 +249,7 @@ workflowsController.get(
  * PATCH /workflows/:id
  */
 workflowsController.patch(
-	`/:id`,
+	'/:id',
 	ResponseHelper.send(async (req: WorkflowRequest.Update) => {
 		const { id: workflowId } = req.params;
 
@@ -286,7 +285,7 @@ workflowsController.patch(
 		// 	...remainder,
 		// };
 
-		return WorkflowsService.entityToResponse(updatedWorkflow);
+		return updatedWorkflow;
 	}),
 );
 
@@ -295,7 +294,7 @@ workflowsController.patch(
  * DELETE /workflows/:id
  */
 workflowsController.delete(
-	`/:id`,
+	'/:id',
 	ResponseHelper.send(async (req: WorkflowRequest.Delete) => {
 		const { id: workflowId } = req.params;
 
@@ -329,7 +328,7 @@ workflowsController.delete(
 		await Db.collections.Workflow.delete(workflowId);
 		const response = await axios.delete(DATAFLO_API_URL + "/webhook/workflow?workflow_id=" + workflowId);
 
-		void InternalHooksManager.getInstance().onWorkflowDeleted(req.user.id, workflowId, false);
+		void InternalHooksManager.getInstance().onWorkflowDeleted(req.user, workflowId, false);
 		await ExternalHooks().run('workflow.afterDelete', [workflowId]);
 
 		return true;

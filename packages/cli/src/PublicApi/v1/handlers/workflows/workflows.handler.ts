@@ -38,7 +38,8 @@ export = {
 			workflow.active = false;
 
 			if (!hasStartNode(workflow)) {
-				workflow.nodes.push(getStartNode());
+				//workflow.nodes.push(getStartNode());
+				console.log('The workflow request body has a default trigger...')
 			}
 
 			await replaceInvalidCredentials(workflow);

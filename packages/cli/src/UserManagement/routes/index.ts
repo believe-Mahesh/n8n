@@ -22,13 +22,14 @@ import { meNamespace } from './me';
 import { usersNamespace } from './users';
 import { passwordResetNamespace } from './passwordReset';
 import { ownerNamespace } from './owner';
+import { corsMiddleware } from '@/middlewares/cors';
 
 export function addRoutes(this: N8nApp, ignoredEndpoints: string[], restEndpoint: string): void {
 	// needed for testing; not adding overhead since it directly returns if req.cookies exists
 	this.app.use(cookieParser());
 	this.app.use(jwtAuth());
 
-	this.app.use(async (req: Request, res: Response, next: NextFunction) => {
+	this.app.use(corsMiddleware ,async (req: Request, res: Response, next: NextFunction) => {
 		if (
 			// TODO: refactor me!!!
 			// skip authentication for preflight requests

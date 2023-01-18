@@ -27,6 +27,7 @@ import { AUTH_COOKIE_NAME, DATAFLO_API_URL } from '@/constants';
 import { JwtPayload } from '@/UserManagement/Interfaces';
 import { Exception } from 'handlebars';
 import jwt from 'jsonwebtoken';
+import { In } from 'typeorm';
 
 export const workflowsController = express.Router();
 
@@ -65,8 +66,11 @@ workflowsController.post(
 		const { tags: tagIds } = req.body;
 
 		if (tagIds?.length && !config.getEnv('workflowTagsDisabled')) {
-			newWorkflow.tags = await Db.collections.Tag.findByIds(tagIds, {
+			newWorkflow.tags = await Db.collections.Tag.find({
 				select: ['id', 'name'],
+				where: {
+					id: In(tagIds),
+				},
 			});
 		}
 
@@ -82,23 +86,23 @@ workflowsController.post(
 			const jwtPayload = jwt.verify(authCookie, config.getEnv('userManagement.jwtSecret')) as JwtPayload;
 			const user_email = jwtPayload.additionalParams?.user_email ?? undefined;
 			const entity_key = jwtPayload.additionalParams?.entity_key ?? undefined;
-			if (!user_email || !entity_key)
-				throw new Exception("Cannot create workflow due to creation params missing.");
-			
-			const requestOptions = {
-				workflow_id: savedWorkflow.id.toString(),
-				workflow_name: savedWorkflow.name,
-				created_by: user_email,
-				entity_key: entity_key,
-				created_at: savedWorkflow.createdAt,
-				active: savedWorkflow.active,
-				shared: savedWorkflow.shared,
-				workflow_nodes: savedWorkflow.nodes,
-				workflow_settings: savedWorkflow.settings,
-				connections: savedWorkflow.connections,
-			};
-			const response = await axios.post(DATAFLO_API_URL + "/webhook/workflow", requestOptions);
-			const role = await Db.collections.Role.findOneOrFail({
+			if (user_email && entity_key) {
+				const requestOptions = {
+					workflow_id: savedWorkflow.id.toString(),
+					workflow_name: savedWorkflow.name,
+					created_by: user_email,
+					entity_key: entity_key,
+					created_at: savedWorkflow.createdAt,
+					active: savedWorkflow.active,
+					shared: savedWorkflow.shared,
+					workflow_nodes: savedWorkflow.nodes,
+					workflow_settings: savedWorkflow.settings,
+					connections: savedWorkflow.connections,
+				};
+				const response = await axios.post(DATAFLO_API_URL + "/webhook/workflow", requestOptions);
+			}
+				//throw new Exception("Cannot create workflow due to creation params missing.");
+			const role = await Db.collections.Role.findOneByOrFail({
 				name: 'owner',
 				scope: 'workflow',
 			});

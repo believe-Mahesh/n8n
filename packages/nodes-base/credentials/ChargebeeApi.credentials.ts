@@ -1,4 +1,4 @@
-import { ICredentialType, INodeProperties } from 'n8n-workflow';
+import { IAuthenticateGeneric, ICredentialType, INodeProperties } from 'n8n-workflow';
 
 export class ChargebeeApi implements ICredentialType {
 	name = 'chargebeeApi';
@@ -22,4 +22,13 @@ export class ChargebeeApi implements ICredentialType {
 			default: '',
 		},
 	];
+
+	authenticate: IAuthenticateGeneric = {
+		type: 'generic',
+		properties: {
+			headers: {
+				Authorization: '={{$credentials.apiKey}}:',
+			},
+		},
+	};
 }

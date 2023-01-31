@@ -22,13 +22,4 @@ export class ChargebeeApi implements ICredentialType {
 			default: '',
 		},
 	];
-
-	authenticate: IAuthenticateGeneric = {
-		type: 'generic',
-		properties: {
-			headers: {
-				Authorization: '={{$credentials.apiKey}}:',
-			},
-		},
-	};
 }

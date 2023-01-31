@@ -86,6 +86,12 @@ export class Chargebee implements INodeType {
 						description: 'Create a customer',
 						action: 'Create a customer',
 					},
+					{
+						name: 'Get',
+						value: 'get',
+						description: 'get a customer',
+						action: 'get a customer',
+					},
 				],
 				default: 'create',
 			},
@@ -186,6 +192,22 @@ export class Chargebee implements INodeType {
 				],
 			},
 
+			// ----------------------------------
+			//         customer:get
+			// ----------------------------------
+			{
+				displayName: 'Company Id',
+				name: 'companyId',
+				type: 'string',
+				displayOptions: {
+					show: {
+						resource: ['customer'],
+						operation: ['get'],
+					},
+				},
+				required: true,
+				default: '',
+			},
 			// ----------------------------------
 			//         invoice
 			// ----------------------------------
@@ -494,6 +516,10 @@ export class Chargebee implements INodeType {
 						}
 
 						endpoint = 'customers';
+					} else if(operation === 'get') {
+						requestMethod = 'GET';
+						const companyId = this.getNodeParameter('companyId', i) as string;
+						endpoint = `customers/${companyId.trim()}`;
 					} else {
 						throw new NodeOperationError(
 							this.getNode(),

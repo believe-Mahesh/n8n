@@ -81,13 +81,13 @@ export default mixins(externalHooks).extend({
 					value: 'params',
 				},
 			];
-			if (this.documentationUrl) {
-				options.push({
-					label: this.$locale.baseText('nodeSettings.docs'),
-					value: 'docs',
-					href: this.documentationUrl,
-				});
-			}
+			// if (this.documentationUrl) {
+			// 	options.push({
+			// 		label: this.$locale.baseText('nodeSettings.docs'),
+			// 		value: 'docs',
+			// 		href: this.documentationUrl,
+			// 	});
+			// }
 			if (this.isCommunityNode) {
 				options.push({
 					icon: 'cube',

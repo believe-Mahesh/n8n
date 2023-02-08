@@ -356,9 +356,12 @@
         var(--color-canvas-dot-l)
     );
 
-	--color-canvas-background-h: 228;
-    --color-canvas-background-s: 38%;
-    --color-canvas-background-l: 97%;
+	// --color-canvas-background-h: 228;
+    // --color-canvas-background-s: 38%;
+    // --color-canvas-background-l: 97%;
+	--color-canvas-background-h: 0;
+    --color-canvas-background-s: 0%;
+    --color-canvas-background-l: 99%;
     --color-canvas-background: hsl(
         var(--color-canvas-background-h),
         var(--color-canvas-background-s),

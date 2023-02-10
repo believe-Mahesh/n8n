@@ -11,7 +11,7 @@
 					<template #default="{ shortenedName }">
 						<InlineTextEdit
 							:value="workflowName"
-							:style="{'font-weight': 'bold'}"
+							:style="{'font-weight': '600', 'font-size': '18px'}"
 							:previewValue="shortenedName"
 							:isEditEnabled="isNameEditEnabled"
 							:maxLength="MAX_WORKFLOW_NAME_LENGTH"

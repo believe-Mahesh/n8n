@@ -11,6 +11,7 @@
 					<template #default="{ shortenedName }">
 						<InlineTextEdit
 							:value="workflowName"
+							:style="{'font-weight': 'bold'}"
 							:previewValue="shortenedName"
 							:isEditEnabled="isNameEditEnabled"
 							:maxLength="MAX_WORKFLOW_NAME_LENGTH"
@@ -62,7 +63,7 @@
 				<span class="activator">
 					<WorkflowActivator :workflow-active="isWorkflowActive" :workflow-id="currentWorkflowId" />
 				</span>
-				<enterprise-edition :features="[EnterpriseEditionFeature.Sharing]">
+				<!-- <enterprise-edition :features="[EnterpriseEditionFeature.Sharing]">
 					<n8n-button type="secondary" class="mr-2xs" @click="onShareButtonClick">
 						{{ $locale.baseText('workflowDetails.share') }}
 					</n8n-button>
@@ -91,7 +92,7 @@
 							</template>
 						</n8n-tooltip>
 					</template>
-				</enterprise-edition>
+				</enterprise-edition> -->
 				<SaveButton
 					type="primary"
 					:saved="!this.isDirty && !this.isNewWorkflow"
@@ -107,11 +108,11 @@
 						data-test-id="workflow-import-input"
 						@change="handleFileImport()"
 					/>
-					<n8n-action-dropdown
+					<!-- <n8n-action-dropdown
 						:items="workflowMenuItems"
 						data-test-id="workflow-menu"
 						@select="onWorkflowMenuSelect"
-					/>
+					/> -->
 				</div>
 			</template>
 		</PushConnectionTracker>

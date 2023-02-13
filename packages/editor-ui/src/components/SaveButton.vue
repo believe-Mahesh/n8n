@@ -62,6 +62,8 @@ export default Vue.extend({
 
 .button {
 	height: 30px;
+	background-color: #1f8523;
+	border: 0px;
 }
 
 .saved {

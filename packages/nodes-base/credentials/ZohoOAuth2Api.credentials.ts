@@ -24,7 +24,12 @@ export class ZohoOAuth2Api implements ICredentialType {
 				{
 					name: 'https://accounts.zoho.com/oauth/v2/auth',
 					value: 'https://accounts.zoho.com/oauth/v2/auth',
-					description: 'For the EU, AU, and IN domains',
+					description: 'For the US domains',
+				},
+				{
+					name: 'https://accounts.zoho.in/oauth/v2/auth',
+					value: 'https://accounts.zoho.in/oauth/v2/auth',
+					description: 'For IN domains',
 				},
 				{
 					name: 'https://accounts.zoho.com.cn/oauth/v2/auth',

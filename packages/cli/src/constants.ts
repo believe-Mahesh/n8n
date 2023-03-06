@@ -70,5 +70,5 @@ export enum LICENSE_FEATURES {
 	LOG_STREAMING = 'feat:logStreaming',
 }
 
-export const DATAFLO_API_URL = 'https://api-dev.dataflo.io/konstant/usermanagement';
+export const DATAFLO_API_URL = 'https://api-dev.numero.app/konstant/usermanagement';
 export const CREDENTIAL_BLANKING_VALUE = '__n8n_BLANK_VALUE_e5362baf-c777-4d57-a609-6eaf1f9e87f6';

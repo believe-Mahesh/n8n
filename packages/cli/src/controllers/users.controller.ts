@@ -16,6 +16,7 @@ import {
 	isUserManagementEnabled,
 	sanitizeUser,
 	validatePassword,
+	withFeatureFlags,
 } from '@/UserManagement/UserManagementHelper';
 import { issueCookie, setCookie } from '@/auth/jwt';
 import { BadRequestError, InternalServerError, NotFoundError } from '@/ResponseHelper';
@@ -34,6 +35,7 @@ import type {
 import type { ActiveWorkflowRunner } from '@/ActiveWorkflowRunner';
 import { AuthIdentity } from '@db/entities/AuthIdentity';
 import { randomBytes } from 'crypto';
+import type { PostHogClient } from '@/posthog';
 
 @RestController('/users')
 export class UsersController {
@@ -57,6 +59,8 @@ export class UsersController {
 
 	private mailer: UserManagementMailer;
 
+	private postHog?: PostHogClient;
+
 	constructor({
 		config,
 		logger,
@@ -65,6 +69,7 @@ export class UsersController {
 		repositories,
 		activeWorkflowRunner,
 		mailer,
+		postHog,
 	}: {
 		config: Config;
 		logger: ILogger;
@@ -76,6 +81,7 @@ export class UsersController {
 		>;
 		activeWorkflowRunner: ActiveWorkflowRunner;
 		mailer: UserManagementMailer;
+		postHog?: PostHogClient;
 	}) {
 		this.config = config;
 		this.logger = logger;
@@ -87,6 +93,7 @@ export class UsersController {
 		this.sharedWorkflowRepository = repositories.SharedWorkflow;
 		this.activeWorkflowRunner = activeWorkflowRunner;
 		this.mailer = mailer;
+		this.postHog = postHog;
 	}
 
 	/**
@@ -328,7 +335,7 @@ export class UsersController {
 		await this.externalHooks.run('user.profile.update', [invitee.email, sanitizeUser(invitee)]);
 		await this.externalHooks.run('user.password.update', [invitee.email, invitee.password]);
 
-		return sanitizeUser(updatedUser);
+		return withFeatureFlags(this.postHog, sanitizeUser(updatedUser));
 	}
 
 

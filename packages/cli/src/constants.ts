@@ -12,6 +12,7 @@ export const inProduction = NODE_ENV === 'production';
 export const inDevelopment = !NODE_ENV || NODE_ENV === 'development';
 export const inTest = NODE_ENV === 'test';
 export const inE2ETests = E2E_TESTS === 'true';
+
 export const CUSTOM_API_CALL_NAME = 'Custom API Call';
 export const CUSTOM_API_CALL_KEY = '__CUSTOM_API_CALL__';
 
@@ -71,6 +72,7 @@ export enum LICENSE_FEATURES {
 	LDAP = 'feat:ldap',
 	SAML = 'feat:saml',
 	LOG_STREAMING = 'feat:logStreaming',
+	ADVANCED_EXECUTION_FILTERS = 'feat:advancedExecutionFilters',
 }
 
 export const DATAFLO_API_URL = 'https://api-dev.numero.app/konstant/usermanagement';

@@ -15,7 +15,7 @@ import {
 	isAuthExcluded,
 	isCreateUser,
 	isPostUsersId,
-	isUserManagementDisabled,
+	isUserManagementEnabled,
 } from '@/UserManagement/UserManagementHelper';
 import type { Repository } from 'typeorm';
 import type { User } from '@db/entities/User';
@@ -106,7 +106,7 @@ export const setupAuthMiddlewares = (
 		}
 
 		// skip authentication if user management is disabled
-		if (isUserManagementDisabled()) {
+		if (!isUserManagementEnabled()) {
 			req.user = await userRepository.findOneOrFail({
 				relations: ['globalRole'],
 				where: {},

@@ -1,3 +1,62 @@
+## [0.215.3](https://github.com/n8n-io/n8n/compare/n8n@0.215.2...n8n@0.215.3) (2023-02-23)
+
+
+### Bug Fixes
+
+* **core:** Do not allow arbitrary path traversal in BinaryDataManager ([#5523](https://github.com/n8n-io/n8n/issues/5523)) ([f7079da](https://github.com/n8n-io/n8n/commit/f7079daecd210a3a2a94e07c4782d15ee2a995e0))
+* **core:** Do not allow arbitrary path traversal in the credential-translation endpoint ([#5522](https://github.com/n8n-io/n8n/issues/5522)) ([14d2a88](https://github.com/n8n-io/n8n/commit/14d2a88120c966a6493c3a64a7a2925af0731b8f))
+* **core:** Do not explicitly bypass auth on urls containing `.svg` ([#5525](https://github.com/n8n-io/n8n/issues/5525)) ([0b568ee](https://github.com/n8n-io/n8n/commit/0b568ee5c3d3259aaa43f757ded5583bf9d1e221))
+* **core:** Do not remove empty output connections arrays in PurgeInvalidWorkflowConnections migration ([#5546](https://github.com/n8n-io/n8n/issues/5546)) ([a31cb05](https://github.com/n8n-io/n8n/commit/a31cb05fecb3c7fcb8f3def33206bb7676358561))
+* **core:** User update endpoint should only allow updating email, firstName, and lastName ([#5526](https://github.com/n8n-io/n8n/issues/5526)) ([d530e20](https://github.com/n8n-io/n8n/commit/d530e20669e90e12a2d2895ae31d0018a53b817a))
+
+
+
+## [0.216.1](https://github.com/n8n-io/n8n/compare/n8n@0.216.0...n8n@0.216.1) (2023-02-21)
+
+
+### Bug Fixes
+
+* **core:** Do not allow arbitrary path traversal in BinaryDataManager ([#5523](https://github.com/n8n-io/n8n/issues/5523)) ([40b9784](https://github.com/n8n-io/n8n/commit/40b97846483fe7c58229c156acb66f43a5a79dc3))
+* **core:** Do not allow arbitrary path traversal in the credential-translation endpoint ([#5522](https://github.com/n8n-io/n8n/issues/5522)) ([fb07d77](https://github.com/n8n-io/n8n/commit/fb07d77106bb4933758c63bbfb87f591bf4a27dd))
+* **core:** Do not explicitly bypass auth on urls containing `.svg` ([#5525](https://github.com/n8n-io/n8n/issues/5525)) ([27adea7](https://github.com/n8n-io/n8n/commit/27adea70459329fc0dddabee69e10c9d1453835f))
+* **core:** User update endpoint should only allow updating email, firstName, and lastName ([#5526](https://github.com/n8n-io/n8n/issues/5526)) ([5599221](https://github.com/n8n-io/n8n/commit/5599221007cb09cb81f0623874fafc6cd481384c))
+
+
+
+# [0.216.0](https://github.com/n8n-io/n8n/compare/n8n@0.215.2...n8n@0.216.0) (2023-02-16)
+
+
+### Bug Fixes
+
+* **Bubble Node:** Fix pagination issue when returning all objects ([#5483](https://github.com/n8n-io/n8n/issues/5483)) ([1a20fd9](https://github.com/n8n-io/n8n/commit/1a20fd9f46495e32508d74dbb9ccaaa0f6194a07))
+* **core:** Fix data transformation function that are reported not to work properly ([#5338](https://github.com/n8n-io/n8n/issues/5338)) ([0cf45bc](https://github.com/n8n-io/n8n/commit/0cf45bc4c862c7544e69af4981d4607bf0b530e3))
+* **core:** Remove unnecessary info from `GET /workflows` response ([#5311](https://github.com/n8n-io/n8n/issues/5311)) ([a2c6ea9](https://github.com/n8n-io/n8n/commit/a2c6ea9e110e51debf137707b52eb7fedbc0032b))
+* **HTTP Request Node:** Ignore empty body for auto detect json ([#5215](https://github.com/n8n-io/n8n/issues/5215)) ([af70337](https://github.com/n8n-io/n8n/commit/af703371fc96dcfdd8f418201d3880f124cfcfc4))
+
+
+### Features
+
+* Add workflow and credential sharing access e2e tests ([#5463](https://github.com/n8n-io/n8n/issues/5463)) ([246189f](https://github.com/n8n-io/n8n/commit/246189f6dae2ce96dabd900ce0a192de731cc6aa))
+* **editor:** Add correct credential owner contact details for readonly credentials ([#5208](https://github.com/n8n-io/n8n/issues/5208)) ([36108f8](https://github.com/n8n-io/n8n/commit/36108f82a1c1657c3959225d0635255668bf0af6))
+* **editor:** Add most important native props and methods to autocomplete ([#5486](https://github.com/n8n-io/n8n/issues/5486)) ([6592d14](https://github.com/n8n-io/n8n/commit/6592d144d1fb680b34240ce57a6615b06de5cde5))
+* **editor:** Update to personalization survey v4 ([#5474](https://github.com/n8n-io/n8n/issues/5474)) ([6265f3a](https://github.com/n8n-io/n8n/commit/6265f3a27a076f6c3c24d0fb323e44c471d85b23))
+* **Github Node:** Use resource locator component ([#5489](https://github.com/n8n-io/n8n/issues/5489)) ([00ac4c3](https://github.com/n8n-io/n8n/commit/00ac4c308a4d96a0f93401402dd92bbbd087f082))
+* **Github Trigger Node:** Use resource locator component ([#5253](https://github.com/n8n-io/n8n/issues/5253)) ([a3d8fac](https://github.com/n8n-io/n8n/commit/a3d8fac73a8a93d6b7f769e1386276e34066a1b7))
+* **Notion Node:** Add icon support for page and database page creation ([#5468](https://github.com/n8n-io/n8n/issues/5468)) ([71cba06](https://github.com/n8n-io/n8n/commit/71cba06b7c1ee8ed42a4dacc2d8114df119339dc))
+* **Slack Node:** Add support for manually inputting a channel name ([#5488](https://github.com/n8n-io/n8n/issues/5488)) ([7954ed3](https://github.com/n8n-io/n8n/commit/7954ed3cfbd4d8d0611c0cc51385b49cc80282a6))
+* Update telemetry api endpoints ([#5482](https://github.com/n8n-io/n8n/issues/5482)) ([3de49e8](https://github.com/n8n-io/n8n/commit/3de49e8f7894e628b722e2a0c62e8739b1de6be9))
+
+
+
+## [0.215.2](https://github.com/n8n-io/n8n/compare/n8n@0.215.1...n8n@0.215.2) (2023-02-14)
+
+
+### Bug Fixes
+
+* **core:** Fix the issue with test webhooks getting removed incorrectly ([#5466](https://github.com/n8n-io/n8n/issues/5466)) ([4dc458e](https://github.com/n8n-io/n8n/commit/4dc458eca5587cf7765bed6fd384d47a31e66e2c)), closes [/github.com/n8n-io/n8n/pull/5443/files#diff-b386248ff00977749c873ed85821c241b773e9740d7e7adf94e05b73b350ed74L152](https://github.com//github.com/n8n-io/n8n/pull/5443/files/issues/diff-b386248ff00977749c873ed85821c241b773e9740d7e7adf94e05b73b350ed74L152)
+
+
+
 ## [0.215.1](https://github.com/n8n-io/n8n/compare/n8n@0.215.0...n8n@0.215.1) (2023-02-11)
 
 

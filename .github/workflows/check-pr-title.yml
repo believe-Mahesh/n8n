@@ -7,7 +7,6 @@ on:
       - edited
       - synchronize
     branches:
-      - '**'
       - '!release/*'
 
 jobs:

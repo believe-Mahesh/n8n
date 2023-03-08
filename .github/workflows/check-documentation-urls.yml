@@ -1,8 +1,9 @@
 name: Check Documentation URLs
 
 on:
-  release:
-    types: [published]
+  push:
+    tags:
+      - n8n@*
   schedule:
     - cron: '0 0 * * *'
   workflow_dispatch:

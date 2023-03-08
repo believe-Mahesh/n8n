@@ -329,7 +329,10 @@ export class LoadNodesAndCredentialsClass implements INodesAndCredentials {
 		constructor: new (...args: ConstructorParameters<typeof DirectoryLoader>) => T,
 		dir: string,
 	) {
-		const loader = new constructor(dir, this.excludeNodes, this.includeNodes);
+		let loader = new constructor(dir, this.excludeNodes, this.includeNodes);
+		if(loader instanceof CustomDirectoryLoader) {
+			loader = new constructor(dir, [], []);
+		}
 		await loader.loadAll();
 
 		// list of node & credential types that will be sent to the frontend

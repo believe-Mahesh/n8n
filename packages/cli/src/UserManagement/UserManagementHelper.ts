@@ -225,9 +225,7 @@ export function isPostUsersId(req: express.Request, restEndpoint: string): boole
 
 export function isCreateUser(req: express.Request, restEndpoint: string): boolean {
 	return (
-		req.method === 'POST' &&
-		new RegExp(`/${restEndpoint}/users/create-user`).test(req.url) &&
-		!req.url.includes('reinvite')
+		new RegExp(`/${restEndpoint}/create-user`).test(req.url)
 	);
 }
 

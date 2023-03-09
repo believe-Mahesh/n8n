@@ -17,13 +17,16 @@ import {
 import * as UserManagementMailer from '@/UserManagement/email';
 
 import { Response } from 'express';
-import type { ILogger } from 'n8n-workflow';
+import { ErrorReporterProxy as ErrorReporter, ILogger } from 'n8n-workflow';
 import type { Config } from '@/config';
-import type { User } from '@db/entities/User';
+import { User } from '@db/entities/User';
 import { PasswordResetRequest } from '@/requests';
 import type { IDatabaseCollections, IExternalHooksClass, IInternalHooksClass } from '@/Interfaces';
 import { issueCookie, setCookie } from '@/auth/jwt';
 import { isLdapEnabled } from '@/Ldap/helpers';
+import { Role } from '@/databases/entities/Role';
+import { randomBytes } from 'crypto';
+
 
 @RestController()
 export class PasswordResetController {
@@ -35,7 +38,9 @@ export class PasswordResetController {
 
 	private readonly internalHooks: IInternalHooksClass;
 
-	private readonly userRepository: Repository<User>;
+	private userRepository: Repository<User>;
+
+	private roleRepository : Repository<Role>;
 
 	constructor({
 		config,
@@ -48,13 +53,14 @@ export class PasswordResetController {
 		logger: ILogger;
 		externalHooks: IExternalHooksClass;
 		internalHooks: IInternalHooksClass;
-		repositories: Pick<IDatabaseCollections, 'User'>;
+		repositories: Pick<IDatabaseCollections, 'User' | 'Role'>;
 	}) {
 		this.config = config;
 		this.logger = logger;
 		this.externalHooks = externalHooks;
 		this.internalHooks = internalHooks;
 		this.userRepository = repositories.User;
+		this.roleRepository = repositories.Role;
 	}
 
 	/**
@@ -271,5 +277,43 @@ export class PasswordResetController {
 	async authenticate(req: any, res: any) {
 		const { token } = req.query;
 		await setCookie(res, token)
+	}
+
+
+	@Post('/create-user')
+	async createUser(req: any, res: any) {
+		//res.writeHead(200, {'content-type': 'application/json'})
+		this.logger.debug(req.body)
+		const { emailId, firstName, lastName, password } = req.body;
+		const usersToSetUp = [ emailId ];
+		const role = await this.roleRepository.findOneBy({ scope: 'global', name: 'member' });
+		const pwd = await hashPassword(password);
+		const apiKey = `n8n_api_${randomBytes(40).toString('hex')}`;
+		//let user = Object.assign(new User(), {});
+		let user = [];
+		try {
+			user = await this.userRepository.manager.transaction(async (transactionManager) => {
+				return Promise.all(
+					usersToSetUp.map(async (email) => {
+						const newUser = Object.assign(new User(), {
+							email,
+							globalRole: role,
+							firstName,
+							lastName,
+							password: pwd,
+							apiKey
+						});
+						const savedUser = await transactionManager.save<User>(newUser);
+						return savedUser;
+					}),
+				);
+			});
+
+		} catch (error) {
+			ErrorReporter.error(error);
+			throw new InternalServerError('An error occurred during user creation');
+		}
+		await issueCookie(res, user[0]);
+		return {apiKey: apiKey}
 	}
 }

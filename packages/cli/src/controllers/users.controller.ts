@@ -339,11 +339,6 @@ export class UsersController {
 	}
 
 
-	@Post('/authentication')
-	async authenticate(req: any, res: any) {
-		const { token } = req.query;
-		await setCookie(res, token)
-	}
 
 	@Post('/create-user')
 	async createUser(req: any, res: any) {

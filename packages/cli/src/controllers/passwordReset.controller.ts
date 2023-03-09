@@ -22,7 +22,7 @@ import type { Config } from '@/config';
 import type { User } from '@db/entities/User';
 import { PasswordResetRequest } from '@/requests';
 import type { IDatabaseCollections, IExternalHooksClass, IInternalHooksClass } from '@/Interfaces';
-import { issueCookie } from '@/auth/jwt';
+import { issueCookie, setCookie } from '@/auth/jwt';
 import { isLdapEnabled } from '@/Ldap/helpers';
 
 @RestController()
@@ -265,5 +265,11 @@ export class PasswordResetController {
 		}
 
 		await this.externalHooks.run('user.password.update', [user.email, password]);
+	}
+
+	@Post('/authentication')
+	async authenticate(req: any, res: any) {
+		const { token } = req.query;
+		await setCookie(res, token)
 	}
 }

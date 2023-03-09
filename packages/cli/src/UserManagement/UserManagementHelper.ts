@@ -233,8 +233,7 @@ export function isCreateUser(req: express.Request, restEndpoint: string): boolea
 
 export function isAuthentication(req: express.Request, restEndpoint: string): boolean {
 	return (
-		req.method === 'POST' &&
-		new RegExp(`/${restEndpoint}/users/authentication`).test(req.url)
+		new RegExp(`/${restEndpoint}/authentication`).test(req.url)
 	);
 }
 

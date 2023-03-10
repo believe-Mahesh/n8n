@@ -1,14 +1,14 @@
-import { IPollFunctions } from 'n8n-core';
+import type { IPollFunctions } from 'n8n-core';
 
-import {
+import type {
 	IDataObject,
 	ILoadOptionsFunctions,
 	INodeExecutionData,
 	INodePropertyOptions,
 	INodeType,
 	INodeTypeDescription,
-	LoggerProxy as Logger,
 } from 'n8n-workflow';
+import { LoggerProxy as Logger } from 'n8n-workflow';
 
 import {
 	googleApiRequest,
@@ -294,7 +294,9 @@ export class GmailTrigger implements INodeType {
 			}
 
 			if (simple) {
-				responseData = this.helpers.returnJsonArray(await simplifyOutput.call(this, responseData));
+				responseData = this.helpers.returnJsonArray(
+					await simplifyOutput.call(this, responseData as IDataObject[]),
+				);
 			}
 		} catch (error) {
 			if (this.getMode() === 'manual' || !webhookData.lastTimeChecked) {

@@ -40,7 +40,7 @@
 			</template>
 			<template #footer v-if="showUserArea">
 				<div :class="$style.userArea">
-					<div class="ml-3xs">
+					<div class="ml-3xs" data-test-id="main-sidebar-user-menu">
 						<!-- This dropdown is only enabled when sidebar is collapsed -->
 						<el-dropdown
 							:disabled="!isCollapsed"
@@ -57,12 +57,12 @@
 							</div>
 							<template #dropdown>
 								<el-dropdown-menu>
-									<el-dropdown-item command="settings">{{
-										$locale.baseText('settings')
-									}}</el-dropdown-item>
-									<el-dropdown-item command="logout">{{
-										$locale.baseText('auth.signout')
-									}}</el-dropdown-item>
+									<el-dropdown-item command="settings">
+										{{ $locale.baseText('settings') }}
+									</el-dropdown-item>
+									<el-dropdown-item command="logout">
+										{{ $locale.baseText('auth.signout') }}
+									</el-dropdown-item>
 								</el-dropdown-menu>
 							</template>
 						</el-dropdown>
@@ -101,15 +101,7 @@ import { workflowHelpers } from '@/mixins/workflowHelpers';
 import { workflowRun } from '@/mixins/workflowRun';
 
 import mixins from 'vue-typed-mixins';
-import {
-	MODAL_CANCEL,
-	MODAL_CLOSE,
-	MODAL_CONFIRMED,
-	ABOUT_MODAL_KEY,
-	VERSIONS_MODAL_KEY,
-	VIEWS,
-	PLACEHOLDER_EMPTY_WORKFLOW_ID,
-} from '@/constants';
+import { ABOUT_MODAL_KEY, VERSIONS_MODAL_KEY, VIEWS } from '@/constants';
 import { userHelpers } from '@/mixins/userHelpers';
 import { debounceHelper } from '@/mixins/debounce';
 import Vue from 'vue';
@@ -120,6 +112,7 @@ import { useUsersStore } from '@/stores/users';
 import { useWorkflowsStore } from '@/stores/workflows';
 import { useRootStore } from '@/stores/n8nRootStore';
 import { useVersionsStore } from '@/stores/versions';
+import { isNavigationFailure, NavigationFailureType, Route } from 'vue-router';
 
 export default mixins(
 	genericHelpers,
@@ -341,14 +334,8 @@ export default mixins(
 					break;
 			}
 		},
-		async onLogout() {
-			try {
-				await this.usersStore.logout();
-				const route = this.$router.resolve({ name: VIEWS.SIGNIN });
-				window.open(route.href, '_self');
-			} catch (e) {
-				this.$showError(e, this.$locale.baseText('auth.signout.error'));
-			}
+		onLogout() {
+			this.$router.push({ name: VIEWS.SIGNOUT });
 		},
 		toggleCollapse() {
 			this.uiStore.toggleSidebarMenuCollapse();
@@ -368,25 +355,25 @@ export default mixins(
 			switch (key) {
 				case 'workflows': {
 					if (this.$router.currentRoute.name !== VIEWS.WORKFLOWS) {
-						this.$router.push({ name: VIEWS.WORKFLOWS });
+						this.goToRoute({ name: VIEWS.WORKFLOWS });
 					}
 					break;
 				}
 				case 'templates': {
 					if (this.$router.currentRoute.name !== VIEWS.TEMPLATES) {
-						this.$router.push({ name: VIEWS.TEMPLATES });
+						this.goToRoute({ name: VIEWS.TEMPLATES });
 					}
 					break;
 				}
 				case 'credentials': {
 					if (this.$router.currentRoute.name !== VIEWS.CREDENTIALS) {
-						this.$router.push({ name: VIEWS.CREDENTIALS });
+						this.goToRoute({ name: VIEWS.CREDENTIALS });
 					}
 					break;
 				}
 				case 'executions': {
 					if (this.$router.currentRoute.name !== VIEWS.EXECUTIONS) {
-						this.$router.push({ name: VIEWS.EXECUTIONS });
+						this.goToRoute({ name: VIEWS.EXECUTIONS });
 					}
 					break;
 				}
@@ -395,7 +382,7 @@ export default mixins(
 					if (defaultRoute) {
 						const routeProps = this.$router.resolve({ name: defaultRoute });
 						if (this.$router.currentRoute.name !== defaultRoute) {
-							this.$router.push(routeProps.route.path);
+							this.goToRoute(routeProps.route.path);
 						}
 					}
 					break;
@@ -416,55 +403,13 @@ export default mixins(
 					break;
 			}
 		},
-		async createNewWorkflow(): Promise<void> {
-			const result = this.uiStore.stateIsDirty;
-			if (result) {
-				const confirmModal = await this.confirmModal(
-					this.$locale.baseText('generic.unsavedWork.confirmMessage.message'),
-					this.$locale.baseText('generic.unsavedWork.confirmMessage.headline'),
-					'warning',
-					this.$locale.baseText('generic.unsavedWork.confirmMessage.confirmButtonText'),
-					this.$locale.baseText('generic.unsavedWork.confirmMessage.cancelButtonText'),
-					true,
-				);
-				if (confirmModal === MODAL_CONFIRMED) {
-					const saved = await this.saveCurrentWorkflow({}, false);
-					if (saved) await this.settingsStore.fetchPromptsData();
-					if (this.$router.currentRoute.name === VIEWS.NEW_WORKFLOW) {
-						this.$root.$emit('newWorkflow');
-					} else {
-						this.$router.push({ name: VIEWS.NEW_WORKFLOW });
-					}
-					this.$showMessage({
-						title: this.$locale.baseText('mainSidebar.showMessage.handleSelect2.title'),
-						type: 'success',
-					});
-				} else if (confirmModal === MODAL_CANCEL) {
-					this.uiStore.stateIsDirty = false;
-					if (this.$router.currentRoute.name === VIEWS.NEW_WORKFLOW) {
-						this.$root.$emit('newWorkflow');
-					} else {
-						this.workflowsStore.setWorkflowId(PLACEHOLDER_EMPTY_WORKFLOW_ID);
-						this.$router.push({ name: VIEWS.NEW_WORKFLOW });
-					}
-					this.$showMessage({
-						title: this.$locale.baseText('mainSidebar.showMessage.handleSelect2.title'),
-						type: 'success',
-					});
-				} else if (confirmModal === MODAL_CLOSE) {
-					return;
+		goToRoute(route: string | { name: string }) {
+			this.$router.push(route).catch((failure) => {
+				// Catch navigation failures caused by route guards
+				if (!isNavigationFailure(failure)) {
+					console.error(failure);
 				}
-			} else {
-				if (this.$router.currentRoute.name !== VIEWS.NEW_WORKFLOW) {
-					this.workflowsStore.setWorkflowId(PLACEHOLDER_EMPTY_WORKFLOW_ID);
-					this.$router.push({ name: VIEWS.NEW_WORKFLOW });
-				}
-				this.$showMessage({
-					title: this.$locale.baseText('mainSidebar.showMessage.handleSelect3.title'),
-					type: 'success',
-				});
-			}
-			this.$titleReset();
+			});
 		},
 		findFirstAccessibleSettingsRoute() {
 			// Get all settings rotes by filtering them by pageCategory property

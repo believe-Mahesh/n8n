@@ -1,21 +1,22 @@
-import { WorkflowsPage, WorkflowPage, NDV } from '../pages';
+import { WorkflowPage, NDV } from '../pages';
 import { v4 as uuid } from 'uuid';
 
-const workflowsPage = new WorkflowsPage();
 const workflowPage = new WorkflowPage();
 const ndv = new NDV();
 
 describe('NDV', () => {
-	beforeEach(() => {
+	before(() => {
 		cy.resetAll();
 		cy.skipSetup();
-		workflowsPage.actions.createWorkflowFromCard();
+
+	});
+	beforeEach(() => {
+		workflowPage.actions.visit();
 		workflowPage.actions.renameWorkflow(uuid());
 		workflowPage.actions.saveWorkflowOnButtonClick();
 	});
-
 	it('should show up when double clicked on a node and close when Back to canvas clicked', () => {
-		workflowPage.actions.addInitialNodeToCanvas('Manual Trigger');
+		workflowPage.actions.addInitialNodeToCanvas('Manual');
 		workflowPage.getters.canvasNodes().first().dblclick();
 		ndv.getters.container().should('be.visible');
 		ndv.getters.backToCanvas().click();
@@ -40,7 +41,7 @@ describe('NDV', () => {
 			});
 		});
 
-		ndv.getters.runDataDisplayMode().should('have.length.at.least', 1).and('be.visible');
+		ndv.getters.outputDisplayMode().should('have.length.at.least', 1).and('be.visible');
 	});
 
 	it('should change input', () => {
@@ -49,11 +50,12 @@ describe('NDV', () => {
 		workflowPage.getters.canvasNodes().last().dblclick();
 		ndv.getters.inputSelect().click();
 		ndv.getters.inputOption().last().click();
+		ndv.getters.inputDataContainer().find('[class*=schema_]').should('exist')
 		ndv.getters.inputDataContainer().should('contain', 'start');
 	});
 
 	it('should show correct validation state for resource locator params', () => {
-		workflowPage.actions.addNodeToCanvas('Typeform', true);
+		workflowPage.actions.addNodeToCanvas('Typeform', true, true);
 		ndv.getters.container().should('be.visible');
 		cy.get('.has-issues').should('have.length', 0);
 		cy.get('[class*=hasIssues]').should('have.length', 0);
@@ -65,12 +67,12 @@ describe('NDV', () => {
 	});
 
 	it('should show validation errors only after blur or re-opening of NDV', () => {
-		workflowPage.actions.addNodeToCanvas('Manual Trigger');
-		workflowPage.actions.addNodeToCanvas('Airtable', true);
+		workflowPage.actions.addNodeToCanvas('Manual');
+		workflowPage.actions.addNodeToCanvas('Airtable', true, true, 'Read data from a table');
 		ndv.getters.container().should('be.visible');
 		cy.get('.has-issues').should('have.length', 0);
-		ndv.getters.parameterInput('table').find('input').eq(1).focus().blur()
-		ndv.getters.parameterInput('application').find('input').eq(1).focus().blur()
+		ndv.getters.parameterInput('table').find('input').eq(1).focus().blur();
+		ndv.getters.parameterInput('application').find('input').eq(1).focus().blur();
 		cy.get('.has-issues').should('have.length', 2);
 		ndv.getters.backToCanvas().click();
 		workflowPage.actions.openNode('Airtable');
@@ -87,5 +89,4 @@ describe('NDV', () => {
 			cy.get('[class*=hasIssues]').should('have.length', 1);
 		});
 	});
-
 });

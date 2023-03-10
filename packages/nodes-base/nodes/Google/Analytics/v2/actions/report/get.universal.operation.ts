@@ -1,6 +1,6 @@
-import { IExecuteFunctions } from 'n8n-core';
-import { IDataObject, INodeExecutionData, INodeProperties } from 'n8n-workflow';
-import { IData, IDimension, IMetric } from '../../helpers/Interfaces';
+import type { IExecuteFunctions } from 'n8n-core';
+import type { IDataObject, INodeExecutionData, INodeProperties } from 'n8n-workflow';
+import type { IData, IDimension, IMetric } from '../../helpers/Interfaces';
 import {
 	checkDuplicates,
 	defaultEndDate,
@@ -713,11 +713,12 @@ export async function execute(
 	if (simple) {
 		responseData = simplify(responseData);
 	} else if (returnAll && responseData.length > 1) {
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 		responseData = merge(responseData);
 	}
 
 	const executionData = this.helpers.constructExecutionMetaData(
-		this.helpers.returnJsonArray(responseData),
+		this.helpers.returnJsonArray(responseData as IDataObject[]),
 		{ itemData: { item: index } },
 	);
 

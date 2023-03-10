@@ -1,7 +1,7 @@
 /* eslint-disable n8n-nodes-base/node-filename-against-convention */
-import { IExecuteFunctions } from 'n8n-core';
+import type { IExecuteFunctions } from 'n8n-core';
 
-import {
+import type {
 	IDataObject,
 	ILoadOptionsFunctions,
 	INodeExecutionData,
@@ -15,7 +15,7 @@ import { reportFields, reportOperations } from './ReportDescription';
 import { userActivityFields, userActivityOperations } from './UserActivityDescription';
 import { googleApiRequest, googleApiRequestAllItems, merge, simplify } from './GenericFunctions';
 import moment from 'moment-timezone';
-import { IData } from './Interfaces';
+import type { IData } from './Interfaces';
 
 const versionDescription: INodeTypeDescription = {
 	displayName: 'Google Analytics',
@@ -245,6 +245,7 @@ export class GoogleAnalyticsV1 implements INodeType {
 						if (simple) {
 							responseData = simplify(responseData);
 						} else if (returnAll && responseData.length > 1) {
+							// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 							responseData = merge(responseData);
 						}
 					}
@@ -284,7 +285,7 @@ export class GoogleAnalyticsV1 implements INodeType {
 					}
 				}
 				const executionData = this.helpers.constructExecutionMetaData(
-					this.helpers.returnJsonArray(responseData),
+					this.helpers.returnJsonArray(responseData as IDataObject[]),
 					{ itemData: { item: i } },
 				);
 				returnData.push(...executionData);

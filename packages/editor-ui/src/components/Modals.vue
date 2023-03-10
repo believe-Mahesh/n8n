@@ -25,9 +25,9 @@
 			</template>
 		</ModalRoot>
 
-		<ModalRoot :name="PERSONALIZATION_MODAL_KEY">
+		<!-- <ModalRoot :name="PERSONALIZATION_MODAL_KEY">
 			<PersonalizationModal />
-		</ModalRoot>
+		</ModalRoot> -->
 
 		<ModalRoot :name="TAGS_MANAGER_MODAL_KEY">
 			<TagsManager />
@@ -37,11 +37,11 @@
 			<UpdatesPanel />
 		</ModalRoot>
 
-		<ModalRoot :name="VALUE_SURVEY_MODAL_KEY" :keepAlive="true">
+		<!-- <ModalRoot :name="VALUE_SURVEY_MODAL_KEY" :keepAlive="true">
 			<template #default="{ active }">
 				<ValueSurvey :isActive="active" />
 			</template>
-		</ModalRoot>
+		</ModalRoot> -->
 
 		<ModalRoot :name="WORKFLOW_SETTINGS_MODAL_KEY">
 			<WorkflowSettings />
@@ -150,7 +150,7 @@ import OnboardingCallSignupModal from './OnboardingCallSignupModal.vue';
 import PersonalizationModal from './PersonalizationModal.vue';
 import TagsManager from './TagsManager/TagsManager.vue';
 import UpdatesPanel from './UpdatesPanel.vue';
-import ValueSurvey from './ValueSurvey.vue';
+//import ValueSurvey from './ValueSurvey.vue';
 import WorkflowSettings from './WorkflowSettings.vue';
 import DeleteUserModal from './DeleteUserModal.vue';
 import ExecutionsModal from './ExecutionsModal.vue';
@@ -179,7 +179,7 @@ export default Vue.extend({
 		PersonalizationModal,
 		TagsManager,
 		UpdatesPanel,
-		ValueSurvey,
+		//ValueSurvey,
 		WorkflowSettings,
 		WorkflowShareModal,
 		ImportCurlModal,

@@ -40,12 +40,12 @@ export class HubspotTrigger implements INodeType {
 				responseMode: 'onReceived',
 				path: 'webhook',
 			},
-			{
-				name: 'setup',
-				httpMethod: 'GET',
-				responseMode: 'onReceived',
-				path: 'webhook',
-			},
+			// {
+			// 	name: 'setup',
+			// 	httpMethod: 'GET',
+			// 	responseMode: 'onReceived',
+			// 	path: 'webhook',
+			// },
 		],
 		properties: [
 			{
@@ -408,10 +408,16 @@ export class HubspotTrigger implements INodeType {
 		// }
 
 		const req = this.getRequestObject();
-		const events = this.getNodeParameter('eventsUi') as string;
-		const eventValues = JSON.parse(events).eventValues;
-		console.log('-------------------> value is ', eventValues)
+		const events = this.getNodeParameter('eventsUi') as IDataObject;
+		const eventValues = events.eventValues as IDataObject[];
 		const bodyData = req.body;
+		const incomingEventType = bodyData.subscriptionType;
+		const eventFilter = eventValues.filter((val) => {
+			return incomingEventType === val.name
+		})
+		if(eventFilter.length == 0) {
+			return {}
+		}
 		//const headerData = this.getHeaderData();
 		//@ts-ignore
 		// if (headerData['x-hubspot-signature'] === undefined) {

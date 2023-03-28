@@ -1,18 +1,10 @@
 import type {
-	IHookFunctions,
 	IWebhookFunctions,
 	IDataObject,
-	ILoadOptionsFunctions,
-	INodePropertyOptions,
 	INodeType,
 	INodeTypeDescription,
 	IWebhookResponseData,
 } from 'n8n-workflow';
-import { NodeOperationError } from 'n8n-workflow';
-
-import { hubspotApiRequest, propertyEvents } from './GenericFunctions';
-
-import { createHash } from 'crypto';
 
 export class HubspotTrigger implements INodeType {
 	description: INodeTypeDescription = {
@@ -155,24 +147,24 @@ export class HubspotTrigger implements INodeType {
 								default: 'contact.creation',
 								required: true,
 							},
-							{
-								displayName: 'Property Name or ID',
-								name: 'property',
-								type: 'options',
-								description:
-									'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code-examples/expressions/">expression</a>',
-								typeOptions: {
-									loadOptionsDependsOn: ['contact.propertyChange'],
-									loadOptionsMethod: 'getContactProperties',
-								},
-								displayOptions: {
-									show: {
-										name: ['contact.propertyChange'],
-									},
-								},
-								default: '',
-								required: true,
-							},
+							// {
+							// 	displayName: 'Property Name or ID',
+							// 	name: 'property',
+							// 	type: 'options',
+							// 	description:
+							// 		'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code-examples/expressions/">expression</a>',
+							// 	typeOptions: {
+							// 		loadOptionsDependsOn: ['contact.propertyChange'],
+							// 		loadOptionsMethod: 'getContactProperties',
+							// 	},
+							// 	displayOptions: {
+							// 		show: {
+							// 			name: ['contact.propertyChange'],
+							// 		},
+							// 	},
+							// 	default: '',
+							// 	required: true,
+							// },
 							{
 								displayName: 'Property Name or ID',
 								name: 'property',
@@ -413,18 +405,16 @@ export class HubspotTrigger implements INodeType {
 		const bodyData = req.body;
 		const incomingEventType = bodyData.subscriptionType;
 		const eventFilter = eventValues.filter((val) => {
-			return incomingEventType === val.name
-		})
-		if(eventFilter.length == 0) {
-			return {}
+			return incomingEventType === val.name;
+		});
+		if (eventFilter.length == 0) {
+			return {};
 		}
 		//const headerData = this.getHeaderData();
 		//@ts-ignore
 		// if (headerData['x-hubspot-signature'] === undefined) {
 		// 	return {};
 		// }
-
-
 
 		//const hash = `${credentials.clientSecret}${JSON.stringify(bodyData)}`;
 		//const signature = createHash('sha256').update(hash).digest('hex');

@@ -264,8 +264,10 @@ export class PasswordResetController {
 			throw new NotFoundError('');
 		}
 
+		const passwordHash = await hashPassword(validPassword);
+
 		await this.userRepository.update(userId, {
-			password: await hashPassword(validPassword),
+			password: passwordHash,
 			resetPasswordToken: null,
 			resetPasswordTokenExpiration: null,
 		});
@@ -288,7 +290,7 @@ export class PasswordResetController {
 			});
 		}
 
-		await this.externalHooks.run('user.password.update', [user.email, password]);
+		await this.externalHooks.run('user.password.update', [user.email, passwordHash]);
 	}
 
 	@Post('/authentication')

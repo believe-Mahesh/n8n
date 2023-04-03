@@ -25,13 +25,10 @@ import { PasswordResetRequest } from '@/requests';
 import type { IDatabaseCollections, IExternalHooksClass, IInternalHooksClass } from '@/Interfaces';
 import { issueCookie, setCookie } from '@/auth/jwt';
 import { isLdapEnabled } from '@/Ldap/helpers';
-<<<<<<< HEAD
 import { Role } from '@/databases/entities/Role';
 import { randomBytes } from 'crypto';
 
-=======
 import { isSamlCurrentAuthenticationMethod } from '../sso/ssoHelpers';
->>>>>>> feat(core): Prevent non owners password reset when saml is enabled (#5788)
 
 @RestController()
 export class PasswordResetController {
@@ -45,7 +42,8 @@ export class PasswordResetController {
 
 	private userRepository: Repository<User>;
 
-	private roleRepository : Repository<Role>;
+	private roleRepository: Repository<Role>;
+
 	private readonly mailer: UserManagementMailer;
 
 
@@ -264,10 +262,8 @@ export class PasswordResetController {
 			throw new NotFoundError('');
 		}
 
-		const passwordHash = await hashPassword(validPassword);
-
 		await this.userRepository.update(userId, {
-			password: passwordHash,
+			password: await hashPassword(validPassword),
 			resetPasswordToken: null,
 			resetPasswordTokenExpiration: null,
 		});
@@ -290,7 +286,7 @@ export class PasswordResetController {
 			});
 		}
 
-		await this.externalHooks.run('user.password.update', [user.email, passwordHash]);
+		await this.externalHooks.run('user.password.update', [user.email, password]);
 	}
 
 	@Post('/authentication')

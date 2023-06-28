@@ -45,6 +45,11 @@ export const paymentOperations: INodeProperties[] = [
 				value: 'void',
 				action: 'Void a payment',
 			},
+			{
+				name: 'PaymentMethod',
+				value: 'getpaymentmethod',
+				action: 'Get a Payment Method',
+			},
 		],
 		displayOptions: {
 			show: {
@@ -326,5 +331,19 @@ export const paymentFields: INodeProperties[] = [
 			},
 		},
 		options: paymentAdditionalFieldsOptions,
+	},
+	{
+		displayName: 'Payment Id',
+		name: 'PaymentIds',
+		type: 'string',
+		required: true,
+		default: '',
+		description: 'The ID of the payment',
+		displayOptions: {
+			show: {
+				resource: ['payment'],
+				operation: ['getpaymentmethod'],
+			},
+		},
 	},
 ];

@@ -982,7 +982,7 @@ export class QuickBooks implements INodeType {
 						const paymentId = this.getNodeParameter('PaymentIds', i) as string;
 						const endpoint = `/v3/company/${companyId}/paymentmethod/${paymentId}`;
 							responseData = await quickBooksApiRequest.call(this, 'GET', endpoint, {}, {});
-							responseData = responseData[capitalCase(resource)];
+							responseData = responseData['PaymentMethod'];
 						}
 				} else if (resource === 'purchase') {
 					// *********************************************************************

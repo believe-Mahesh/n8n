@@ -235,6 +235,18 @@ export class Chargebee implements INodeType {
 						description: 'Get URL for the invoice PDF',
 						action: 'Get URL for the invoice PDF',
 					},
+					{
+						name: 'Get An invoice',
+						value: 'invoices',
+						description: 'Return The Invoive Detail',
+						action: 'Get The Invoive details',
+					},
+					{
+						name: 'Update The payment status',
+						value: 'payment',
+						description: 'Update The Payment Status',
+						action: 'Update the Payment Status',
+					},
 				],
 			},
 
@@ -384,7 +396,62 @@ export class Chargebee implements INodeType {
 					},
 				},
 			},
-
+			{
+				displayName: 'Invoice ',
+				name: 'invoiceIds',
+				description: 'The ID of the invoice to get',
+				type: 'string',
+				default: '',
+				required: true,
+				displayOptions: {
+					show: {
+						operation: ['invoices'],
+						resource: ['invoice'],
+					},
+				},
+			},
+			{
+				displayName: 'Invoice Id',
+				name: 'invoiceId',
+				description: 'The Payment of the invoice to be Updated',
+				type: 'string',
+				default: '',
+				required: true,
+				displayOptions: {
+					show: {
+						operation: ['payment'],
+						resource: ['invoice'],
+					},
+				},
+			},
+			{
+				displayName: 'Payment Amount',
+				name: 'paymentAmount',
+				description: 'The Payment to be Updated',
+				type: 'string',
+				default: '',
+				required: true,
+				displayOptions: {
+					show: {
+						operation: ['payment'],
+						resource: ['invoice'],
+					},
+				},
+			},
+			{
+				displayName: 'Payment Method',
+				name: 'paymentMethod',
+				description: 'The Payment method to be Updated',
+				type: 'string',
+				default: '',
+				required: true,
+				displayOptions: {
+					show: {
+						operation: ['payment'],
+						resource: ['invoice'],
+					},
+				},
+			},
 			// ----------------------------------
 			//         subscription
 			// ----------------------------------
@@ -565,7 +632,28 @@ export class Chargebee implements INodeType {
 						requestMethod = 'POST';
 						const invoiceId = this.getNodeParameter('invoiceId', i) as string;
 						endpoint = `invoices/${invoiceId.trim()}/pdf`;
-					} else {
+					} 
+					else if (operation === 'invoices') {
+						// ----------------------------------
+						//         Get an invoice number
+						// ----------------------------------
+
+						requestMethod = 'GET';
+						const invoiceIds = this.getNodeParameter('invoiceIds', i) as string;
+						endpoint = `invoices/${invoiceIds.trim()}`;
+					} 
+					else if (operation === 'payment') {
+						// ----------------------------------
+						//        Payment Update
+						// ----------------------------------
+
+						requestMethod = 'POST';
+						const invoiceId = this.getNodeParameter('invoiceId', i) as string;
+						const paymentAmount = this.getNodeParameter('paymentAmount', i) as string;
+						const paymentMethod = this.getNodeParameter('paymentMethod', i) as string;
+						endpoint = `invoices/${invoiceId.trim()}/record_payment?comment=Paymentreceived&transaction[amount]=${paymentAmount}&transaction[payment_method]=${paymentMethod}`;
+					}
+					else {
 						throw new NodeOperationError(
 							this.getNode(),
 							`The operation "${operation}" is not known!`,

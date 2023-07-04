@@ -34,6 +34,7 @@ import {
 	sourceOperations,
 	tokenFields,
 	tokenOperations,
+	invoiceOperations,
 } from './descriptions';
 
 export class Stripe implements INodeType {
@@ -91,6 +92,10 @@ export class Stripe implements INodeType {
 						name: 'Token',
 						value: 'token',
 					},
+					{
+						name: 'Invoices',
+						value: 'invoices',
+					},
 				],
 				default: 'balance',
 			},
@@ -107,6 +112,7 @@ export class Stripe implements INodeType {
 			...sourceFields,
 			...tokenOperations,
 			...tokenFields,
+			...invoiceOperations,
 		],
 	};
 
@@ -154,7 +160,45 @@ export class Stripe implements INodeType {
 
 						responseData = await stripeApiRequest.call(this, 'GET', '/balance', {}, {});
 					}
-				} else if (resource === 'customerCard') {
+				} 
+				if (resource === 'invoices') {
+					// *********************************************************************
+					//                             invoices
+					// *********************************************************************
+
+					// https://stripe.com/docs/api/invoices
+
+					if (operation === 'getAll') {
+						// ----------------------------------
+						//       invoice: get
+						// ----------------------------------
+
+						responseData = await stripeApiRequest.call(this, 'GET', '/invoice', {}, {});
+					}
+					else if (operation === 'unPaid') {
+						// ----------------------------------
+						//       invoice: unpaid
+						// ----------------------------------
+
+						responseData = await stripeApiRequest.call(this, 'GET', '/invoice?past_due=true', {}, {});
+					}
+				} 
+				if (resource === 'balance') {
+					// *********************************************************************
+					//                             balance
+					// *********************************************************************
+
+					// https://stripe.com/docs/api/balance
+
+					if (operation === 'get') {
+						// ----------------------------------
+						//       balance: get
+						// ----------------------------------
+
+						responseData = await stripeApiRequest.call(this, 'GET', '/balance', {}, {});
+					}
+				} 
+				else if (resource === 'customerCard') {
 					// *********************************************************************
 					//                           customer card
 					// *********************************************************************

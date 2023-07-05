@@ -35,6 +35,7 @@ import {
 	tokenFields,
 	tokenOperations,
 	invoiceOperations,
+	invoiceFields,
 } from './descriptions';
 
 export class Stripe implements INodeType {
@@ -94,7 +95,7 @@ export class Stripe implements INodeType {
 					},
 					{
 						name: 'Invoices',
-						value: 'invoices',
+						value: 'invoice',
 					},
 				],
 				default: 'balance',
@@ -113,6 +114,7 @@ export class Stripe implements INodeType {
 			...tokenOperations,
 			...tokenFields,
 			...invoiceOperations,
+			...invoiceFields,
 		],
 	};
 
@@ -161,7 +163,7 @@ export class Stripe implements INodeType {
 						responseData = await stripeApiRequest.call(this, 'GET', '/balance', {}, {});
 					}
 				} 
-				if (resource === 'invoices') {
+				if (resource === 'invoice') {
 					// *********************************************************************
 					//                             invoices
 					// *********************************************************************
@@ -173,14 +175,16 @@ export class Stripe implements INodeType {
 						//       invoice: get
 						// ----------------------------------
 
-						responseData = await stripeApiRequest.call(this, 'GET', '/invoice', {}, {});
+						responseData = await handleListing.call(this, resource, i);
 					}
 					else if (operation === 'unPaid') {
 						// ----------------------------------
 						//       invoice: unpaid
 						// ----------------------------------
-
-						responseData = await stripeApiRequest.call(this, 'GET', '/invoice?past_due=true', {}, {});
+						const qs: IDataObject = {
+							past_due: true
+						};
+						responseData = await handleListing.call(this, resource, i,qs);
 					}
 				} 
 				if (resource === 'balance') {
@@ -220,7 +224,7 @@ export class Stripe implements INodeType {
 					} else if (operation === 'remove') {
 						// ----------------------------------
 						//       customerCard: remove
-						// ----------------------------------
+						// -------------------------qs---------
 
 						const customerId = this.getNodeParameter('customerId', i);
 						const cardId = this.getNodeParameter('cardId', i);

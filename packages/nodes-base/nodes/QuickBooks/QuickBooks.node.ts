@@ -30,6 +30,8 @@ import {
 	transactionOperations,
 	vendorFields,
 	vendorOperations,
+	GLFields,
+	GLOperations
 } from './descriptions';
 
 import {
@@ -118,6 +120,10 @@ export class QuickBooks implements INodeType {
 						name: 'Vendor',
 						value: 'vendor',
 					},
+					{
+						name: 'General Ledger',
+						value: 'gl',
+					}
 				],
 				default: 'customer',
 			},
@@ -141,6 +147,8 @@ export class QuickBooks implements INodeType {
 			...transactionFields,
 			...vendorOperations,
 			...vendorFields,
+			...GLOperations,
+			...GLFields
 		],
 	};
 
@@ -1128,6 +1136,19 @@ export class QuickBooks implements INodeType {
 						responseData = await quickBooksApiRequest.call(this, 'POST', endpoint, {}, body);
 						responseData = responseData[capitalCase(resource)];
 					}
+				} else if (resource === 'gl') {
+					// *********************************************************************
+					//                            General Ledger
+					// *********************************************************************
+					    if(operation === 'get') {
+								const startDate = this.getNodeParameter('start_date', i);
+								const endDate = this.getNodeParameter('end_date', i);
+								const endpoint = `/v3/company/${companyId}/reports/GeneralLedger`
+								let qs: any = {};
+								qs['start_date'] = startDate;
+								qs['end_date'] = endDate;
+								responseData = await quickBooksApiRequest.call(this, 'GET', endpoint, qs, {});
+					    }
 				}
 			} catch (error) {
 				if (this.continueOnFail()) {

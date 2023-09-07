@@ -83,7 +83,7 @@ export class QuickbooksTrigger implements INodeType {
 					},
                     {
 						name: 'Payment Void',
-						value: 'payment_update',
+						value: 'payment_void',
 						description: 'Triggered when an payment is updated',
 					},
                     {

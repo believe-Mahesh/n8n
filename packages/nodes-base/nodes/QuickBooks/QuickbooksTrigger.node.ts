@@ -91,26 +91,6 @@ export class QuickbooksTrigger implements INodeType {
 						value: 'payment_create',
 						description: 'Triggered when an payment is created',
 					},
-					{
-						name: 'Customer Update',
-						value: 'customer_update',
-						description: 'Triggered when an customer is updated',
-					},
-                    {
-						name: 'Customer Delete',
-						value: 'customer_delete',
-						description: 'Triggered when an customer is deleted',
-					},
-                    {
-						name: 'Customer Merge',
-						value: 'customer_merge',
-						description: 'Triggered when an customer is merged',
-					},
-                    {
-						name: 'Customer Create',
-						value: 'customer_create',
-						description: 'Triggered when an customer is created',
-					},
                     {
 						name: 'Account Update',
 						value: 'account_update',
@@ -208,7 +188,7 @@ export class QuickbooksTrigger implements INodeType {
 					},
                     {
 						name: 'Employee Create',
-						value: 'customer_create',
+						value: 'employee_create',
 						description: 'Triggered when an employee is created',
 					},
                     {

@@ -314,7 +314,7 @@ export class LoadNodesAndCredentials implements INodesAndCredentials {
 		dir: string,
 	) {
 		let loader = new constructor(dir, this.excludeNodes, this.includeNodes);
-		if(loader instanceof CustomDirectoryLoader) {
+		if(loader instanceof CustomDirectoryLoader || dir.includes('.n8n')) {
 			loader = new constructor(dir, [], []);
 		}
 		await loader.loadAll();

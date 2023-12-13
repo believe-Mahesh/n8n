@@ -62,6 +62,10 @@ export class Chargebee implements INodeType {
 						name: 'Subscription',
 						value: 'subscription',
 					},
+					{
+						name: 'Transactions',
+						value: 'transactions',
+					},
 				],
 				default: 'invoice',
 			},
@@ -92,10 +96,16 @@ export class Chargebee implements INodeType {
 						description: 'get a customer',
 						action: 'get a customer',
 					},
+					{
+						name: 'Get All',
+						value: 'getall',
+						description: 'get all customer',
+						action: 'get all customer',
+					},
 				],
 				default: 'create',
 			},
-
+            
 			// ----------------------------------
 			//         customer:create
 			// ----------------------------------
@@ -249,10 +259,22 @@ export class Chargebee implements INodeType {
 					},
 				],
 			},
-
 			// ----------------------------------
 			//         invoice:list
 			// ----------------------------------
+			{
+                displayName: 'Return All',
+                name: 'returnAll',
+                type: 'boolean',
+                default: false,
+                description: 'Whether to return all results or only up to a given limit',
+                displayOptions: {
+                    show: {
+                        resource: ['list'],
+                        operation: ['invoice'],
+                    },
+                },
+            },
 			{
 				displayName: 'Max Results',
 				name: 'maxResults',
@@ -266,6 +288,7 @@ export class Chargebee implements INodeType {
 					show: {
 						operation: ['list'],
 						resource: ['invoice'],
+						returnAll: [false],
 					},
 				},
 				description: 'Max. amount of results to return(< 100).',
@@ -531,8 +554,48 @@ export class Chargebee implements INodeType {
 					},
 				},
 			},
+			{
+				displayName: 'Operation',
+				name: 'operation',
+				type: 'options',
+				noDataExpression: true,
+				displayOptions: {
+					show: {
+						resource: ['transactions'],
+					},
+				},
+				options: [
+					{
+						name: 'Get',
+						value: 'get',
+						description: 'get a transaction',
+						action: 'get a transaction',
+					},
+					{
+						name: 'Get All',
+						value: 'getall',
+						description: 'get all transaction',
+						action: 'get all transaction',
+					},
+				],
+				default: 'get',
+			},
+			{
+				displayName: 'Transaction Id',
+				name: 'transactionId',
+				type: 'string',
+				displayOptions: {
+					show: {
+						resource: ['transactions'],
+						operation: ['get'],
+					},
+				},
+				required: true,
+				default: '',
+			},
 		],
 	};
+	
 
 	async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
 		const items = this.getInputData();
@@ -587,7 +650,13 @@ export class Chargebee implements INodeType {
 						requestMethod = 'GET';
 						const companyId = this.getNodeParameter('companyId', i) as string;
 						endpoint = `customers/${companyId.trim()}`;
-					} else {
+					} 
+					  else if (operation=== 'getAll')
+		             {
+						requestMethod = 'GET';
+						endpoint = `customers`;
+					 }
+					else {
 						throw new NodeOperationError(
 							this.getNode(),
 							`The operation "${operation}" is not known!`,
@@ -689,7 +758,26 @@ export class Chargebee implements INodeType {
 							{ itemIndex: i },
 						);
 					}
-				} else {
+				} else if (resource === 'transactions') {
+					 if(operation === 'get') {
+						requestMethod = 'GET';
+						const transactionId = this.getNodeParameter('transactionId', i) as string;
+						endpoint = `transactions/${transactionId.trim()}`;
+					} 
+					  else if (operation=== 'getAll')
+		             {
+						requestMethod = 'GET';
+						endpoint = `transactions`;
+					 }
+					else {
+						throw new NodeOperationError(
+							this.getNode(),
+							`The operation "${operation}" is not known!`,
+							{ itemIndex: i },
+						);
+					}
+				}
+				else {
 					throw new NodeOperationError(this.getNode(), `The resource "${resource}" is not known!`, {
 						itemIndex: i,
 					});

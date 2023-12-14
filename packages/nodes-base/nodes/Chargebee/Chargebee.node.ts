@@ -671,7 +671,13 @@ export class Chargebee implements INodeType {
 		             {
 						requestMethod = 'GET';
 						const offset = this.getNodeParameter('offset', i) as string;
+						if(offset){
 						endpoint = `customers?offset=${offset.trim}`;
+						}
+						else
+						{
+							endpoint = `customers`;
+						}
 					 }
 					else {
 						throw new NodeOperationError(
@@ -785,7 +791,13 @@ export class Chargebee implements INodeType {
 		             {
 						requestMethod = 'GET';
 						const offset = this.getNodeParameter('offset', i) as string;
+						if (offset)
+						{
 						endpoint = `transactions?offset=${offset.trim}`;
+						}
+						else{
+							endpoint = `transactions`;
+						}
 					 }
 					else {
 						throw new NodeOperationError(

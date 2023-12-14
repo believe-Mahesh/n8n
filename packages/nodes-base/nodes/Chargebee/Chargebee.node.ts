@@ -219,6 +219,22 @@ export class Chargebee implements INodeType {
 				default: '',
 			},
 			// ----------------------------------
+			//         customer:getAll
+			// ----------------------------------
+			{
+				displayName: 'Offset',
+				name: 'offset',
+				type: 'string',
+				displayOptions: {
+					show: {
+						resource: ['customer'],
+						operation: ['getAll'],
+					},
+				},
+				required: false,
+				default: '',
+			},
+			// ----------------------------------
 			//         invoice
 			// ----------------------------------
 			{
@@ -580,6 +596,19 @@ export class Chargebee implements INodeType {
 				required: true,
 				default: '',
 			},
+			{
+				displayName: 'Offset',
+				name: 'offset',
+				type: 'string',
+				displayOptions: {
+					show: {
+						resource: ['transactions'],
+						operation: ['getAll'],
+					},
+				},
+				required: false,
+				default: '',
+			},
 		],
 	};
 	
@@ -641,7 +670,8 @@ export class Chargebee implements INodeType {
 					  else if (operation=== 'getAll')
 		             {
 						requestMethod = 'GET';
-						endpoint = `customers`;
+						const offset = this.getNodeParameter('offset', i) as string;
+						endpoint = `customers?offset=${offset.trim}`;
 					 }
 					else {
 						throw new NodeOperationError(
@@ -754,7 +784,8 @@ export class Chargebee implements INodeType {
 					  else if (operation=== 'getAll')
 		             {
 						requestMethod = 'GET';
-						endpoint = `transactions`;
+						const offset = this.getNodeParameter('offset', i) as string;
+						endpoint = `transactions?offset=${offset.trim}`;
 					 }
 					else {
 						throw new NodeOperationError(

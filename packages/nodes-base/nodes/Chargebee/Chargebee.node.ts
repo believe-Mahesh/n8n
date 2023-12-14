@@ -98,7 +98,7 @@ export class Chargebee implements INodeType {
 					},
 					{
 						name: 'Get All',
-						value: 'getall',
+						value: 'getAll',
 						description: 'get all customer',
 						action: 'get all customer',
 					},
@@ -262,19 +262,7 @@ export class Chargebee implements INodeType {
 			// ----------------------------------
 			//         invoice:list
 			// ----------------------------------
-			{
-                displayName: 'Return All',
-                name: 'returnAll',
-                type: 'boolean',
-                default: false,
-                description: 'Whether to return all results or only up to a given limit',
-                displayOptions: {
-                    show: {
-                        resource: ['list'],
-                        operation: ['invoice'],
-                    },
-                },
-            },
+			
 			{
 				displayName: 'Max Results',
 				name: 'maxResults',
@@ -288,7 +276,6 @@ export class Chargebee implements INodeType {
 					show: {
 						operation: ['list'],
 						resource: ['invoice'],
-						returnAll: [false],
 					},
 				},
 				description: 'Max. amount of results to return(< 100).',
@@ -573,7 +560,7 @@ export class Chargebee implements INodeType {
 					},
 					{
 						name: 'Get All',
-						value: 'getall',
+						value: 'getAll',
 						description: 'get all transaction',
 						action: 'get all transaction',
 					},

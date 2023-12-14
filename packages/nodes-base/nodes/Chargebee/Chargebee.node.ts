@@ -273,7 +273,29 @@ export class Chargebee implements INodeType {
 						description: 'Update The Payment Status',
 						action: 'Update the Payment Status',
 					},
+					{
+						name: 'Get All',
+						value: 'getAll',
+						description: 'get all invoices',
+						action: 'get all invoices',
+					},
 				],
+			},
+			// ----------------------------------
+			//         invoice:get All
+			// ----------------------------------
+			{
+				displayName: 'Offset',
+				name: 'offset',
+				type: 'string',
+				displayOptions: {
+					show: {
+						resource: ['invoice'],
+						operation: ['getAll'],
+					},
+				},
+				required: false,
+				default: '',
 			},
 			// ----------------------------------
 			//         invoice:list
@@ -672,7 +694,7 @@ export class Chargebee implements INodeType {
 						requestMethod = 'GET';
 						const offset = this.getNodeParameter('offset', i) as string;
 						if(offset){
-						endpoint = `customers?offset=${offset.trim}`;
+						endpoint = `customers?offset=${offset.trim()}`;
 						}
 						else
 						{
@@ -725,15 +747,26 @@ export class Chargebee implements INodeType {
 						const invoiceId = this.getNodeParameter('invoiceId', i) as string;
 						endpoint = `invoices/${invoiceId.trim()}/pdf`;
 					} 
-					else if (operation === 'invoices') {
+					else if (operation === 'getAll') {
 						// ----------------------------------
 						//         Get an invoice number
 						// ----------------------------------
 
 						requestMethod = 'GET';
+						const offset = this.getNodeParameter('offset', i) as string;
+						if(offset){
+						endpoint = `invoices?offset=${offset.trim()}`;
+						}
+						else
+						{
+							endpoint = `invoices`;
+						}
+					} 
+					else if (operation === 'invoices') {
+						requestMethod = 'GET';
 						const invoiceIds = this.getNodeParameter('invoiceIds', i) as string;
 						endpoint = `invoices/${invoiceIds.trim()}`;
-					} 
+					}
 					else if (operation === 'payment') {
 						// ----------------------------------
 						//        Payment Update
@@ -793,7 +826,7 @@ export class Chargebee implements INodeType {
 						const offset = this.getNodeParameter('offset', i) as string;
 						if (offset)
 						{
-						endpoint = `transactions?offset=${offset.trim}`;
+						endpoint = `transactions?offset=${offset.trim()}`;
 						}
 						else{
 							endpoint = `transactions`;

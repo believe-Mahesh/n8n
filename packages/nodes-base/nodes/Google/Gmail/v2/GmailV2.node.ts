@@ -353,7 +353,7 @@ export class GmailV2 implements INodeType {
 
 						if (simple) {
 							qs.format = 'metadata';
-							qs.metadataHeaders = ['From', 'To', 'Cc', 'Bcc', 'Subject'];
+							qs.metadataHeaders = ['From', 'To', 'Cc', 'Bcc', 'Subject', 'References'];
 						} else {
 							qs.format = 'raw';
 						}

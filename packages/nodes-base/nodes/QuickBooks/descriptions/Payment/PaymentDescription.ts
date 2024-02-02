@@ -50,6 +50,11 @@ export const paymentOperations: INodeProperties[] = [
 				value: 'getpaymentmethod',
 				action: 'Get a Payment Method',
 			},
+			{
+				name: 'PaymentMethodAll',
+				value: 'getallpaymentmethod',
+				action: 'Get All Payment Methods',
+			},
 		],
 		displayOptions: {
 			show: {

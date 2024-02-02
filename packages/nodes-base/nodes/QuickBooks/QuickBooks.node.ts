@@ -996,10 +996,8 @@ export class QuickBooks implements INodeType {
 							// ----------------------------------
 							//         payment: Payment Method ALL
 							// ----------------------------------
-							
-							const endpoint = `/v3/company/${companyId}/query?query=select * from paymentmethod&minorversion=40`;
-								responseData = await quickBooksApiRequest.call(this, 'GET', endpoint, {}, {});
-								responseData = responseData['PaymentMethod'];
+							const endpoint = `/v3/company/${companyId}/query`;
+						responseData = await handleListing.call(this, i, endpoint, resource);
 							}
 				} else if (resource === 'purchase') {
 					// *********************************************************************

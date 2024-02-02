@@ -175,7 +175,14 @@ export async function handleListing(
 		const limit = this.getNodeParameter('limit', i);
 		qs.query += ` MAXRESULTS ${limit}`;
 		responseData = await quickBooksApiRequest.call(this, 'GET', endpoint, qs, {});
+		if(resource==='PaymentMethod')
+		{
+		responseData = responseData.QueryResponse[resource];
+		}
+		else 
+		{
 		responseData = responseData.QueryResponse[capitalCase(resource)];
+		}
 		return responseData;
 	}
 }

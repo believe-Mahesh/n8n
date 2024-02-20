@@ -66,6 +66,10 @@ export class Chargebee implements INodeType {
 						name: 'Transactions',
 						value: 'transactions',
 					},
+					{
+						name: 'Creditnotes',
+						value: 'creditnotes',
+					},
 				],
 				default: 'invoice',
 			},
@@ -105,7 +109,39 @@ export class Chargebee implements INodeType {
 				],
 				default: 'create',
 			},
-            
+            {
+				displayName: 'Operation',
+				name: 'operation',
+				type: 'options',
+				noDataExpression: true,
+				displayOptions: {
+					show: {
+						resource: ['creditnotes'],
+					},
+				},
+				options: [	
+					{
+						name: 'Get All',
+						value: 'getAll',
+						description: 'get all Credit Notes',
+						action: 'get all credit Notes',
+					},
+				],
+				default: 'getAll',
+			},
+			{
+				displayName: 'Offset',
+				name: 'offset',
+				type: 'string',
+				displayOptions: {
+					show: {
+						resource: ['creditnotes'],
+						operation: ['getAll'],
+					},
+				},
+				required: false,
+				default: '',
+			},
 			// ----------------------------------
 			//         customer:create
 			// ----------------------------------
@@ -785,7 +821,25 @@ export class Chargebee implements INodeType {
 							{ itemIndex: i },
 						);
 					}
-				} else if (resource === 'subscription') {
+				} else if (resource==='creditnotes')
+				{
+					 if (operation === 'getAll') {
+						// ----------------------------------
+						//         Get all credit Notes
+						// ----------------------------------
+
+						requestMethod = 'GET';
+						const offset = this.getNodeParameter('offset', i) as string;
+						if(offset){
+						endpoint = `credit_notes?offset=${offset.trim()}`;
+						}
+						else
+						{
+							endpoint = `credit_notes`;
+						}
+					} 	
+				}
+				else if (resource === 'subscription') {
 					if (operation === 'cancel') {
 						// ----------------------------------
 						//         cancel

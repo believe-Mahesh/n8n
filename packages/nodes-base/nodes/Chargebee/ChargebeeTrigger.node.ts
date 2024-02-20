@@ -220,6 +220,24 @@ export class ChargebeeTrigger implements INodeType {
 						description:
 							'Triggered when a transaction is updated. E.g. (1) When a transaction is removed, (2) or when an excess payment is applied on an invoice, (3) or when amount_capturable gets updated.',
 					},
+					{
+						name: 'Credit Note Created ',
+						value: 'credit_note_created',
+						description:
+							'Triggered when credit note is created',
+					},
+					{
+						name: 'Credit Note Updated ',
+						value: 'credit_note_updated',
+						description:
+							'Triggered when credit note is updated',
+					},
+					{
+						name: 'Credit Note Deleted ',
+						value: 'credit_note_deleted',
+						description:
+							'Triggered when credit note is Deleted',
+					},
 				],
 			},
 		],

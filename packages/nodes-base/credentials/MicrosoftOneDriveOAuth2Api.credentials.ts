@@ -15,7 +15,7 @@ export class MicrosoftOneDriveOAuth2Api implements ICredentialType {
 			displayName: 'Scope',
 			name: 'scope',
 			type: 'hidden',
-			default: 'openid offline_access Files.ReadWrite.All',
+			default: 'openid offline_access Files.Read.All',
 		},
 	];
 }

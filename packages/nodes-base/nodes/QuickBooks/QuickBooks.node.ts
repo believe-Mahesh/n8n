@@ -393,7 +393,15 @@ export class QuickBooks implements INodeType {
 
 						const endpoint = `/v3/company/${companyId}/query`;
 						responseData = await handleListing.call(this, i, endpoint, resource);
-					} else if (operation === 'update') {
+					} else if (operation ==='getAllTerms'){
+                        const resources='Term';
+                        //--------------------------------------
+                        //       customer:getAllTerms
+                        //--------------------------------------
+                         const endpoint =`/v3/company/${companyId}/query`;
+                         responseData=await handleListing.call(this, i ,endpoint,resources)
+                    }
+					else if (operation === 'update') {
 						// ----------------------------------
 						//         customer: update
 						// ----------------------------------

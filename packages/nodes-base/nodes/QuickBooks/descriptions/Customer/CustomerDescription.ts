@@ -30,6 +30,11 @@ export const customerOperations: INodeProperties[] = [
 				value: 'update',
 				action: 'Update a customer',
 			},
+			{
+                name:'get',
+                value:'getAllTerms',
+                action:'get All Payment Terms'
+            },
 		],
 		displayOptions: {
 			show: {
@@ -89,7 +94,37 @@ export const customerFields: INodeProperties[] = [
 			},
 		},
 	},
-
+	{
+		displayName: 'Return All Terms',
+		name: 'getAllTerms',
+		type: 'boolean',
+		default: false,
+		description: 'Whether to return all results or only up to a given limit',
+		displayOptions: {
+			show: {
+				resource: ['customer'],
+				operation: ['getAllTerms'],
+			},
+		},
+	},
+	{
+		displayName: 'Limit',
+		name: 'limit',
+		type: 'number',
+		default: 50,
+		description: 'Max number of results to return',
+		typeOptions: {
+			minValue: 1,
+			maxValue: 1000,
+		},
+		displayOptions: {
+			show: {
+				resource: ['customer'],
+				operation: ['getAllTerms'],
+				returnAll: [false],
+			},
+		},
+	},
 	// ----------------------------------
 	//         customer: getAll
 	// ----------------------------------

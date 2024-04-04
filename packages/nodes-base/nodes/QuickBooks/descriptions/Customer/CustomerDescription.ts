@@ -31,7 +31,7 @@ export const customerOperations: INodeProperties[] = [
 				action: 'Update a customer',
 			},
 			{
-                name:'get',
+                name:'Get All Terms',
                 value:'getAllTerms',
                 action:'get All Payment Terms'
             },
@@ -94,37 +94,6 @@ export const customerFields: INodeProperties[] = [
 			},
 		},
 	},
-	{
-		displayName: 'Return All Terms',
-		name: 'getAllTerms',
-		type: 'boolean',
-		default: false,
-		description: 'Whether to return all results or only up to a given limit',
-		displayOptions: {
-			show: {
-				resource: ['customer'],
-				operation: ['getAllTerms'],
-			},
-		},
-	},
-	{
-		displayName: 'Limit',
-		name: 'limit',
-		type: 'number',
-		default: 50,
-		description: 'Max number of results to return',
-		typeOptions: {
-			minValue: 1,
-			maxValue: 1000,
-		},
-		displayOptions: {
-			show: {
-				resource: ['customer'],
-				operation: ['getAllTerms'],
-				returnAll: [false],
-			},
-		},
-	},
 	// ----------------------------------
 	//         customer: getAll
 	// ----------------------------------
@@ -183,7 +152,7 @@ export const customerFields: INodeProperties[] = [
 			},
 		},
 	},
-
+    
 	// ----------------------------------
 	//         customer: update
 	// ----------------------------------
@@ -215,5 +184,63 @@ export const customerFields: INodeProperties[] = [
 			},
 		},
 		options: customerAdditionalFieldsOptions,
+	},
+	//-------------------------------------
+	//    customer : CustomerTerms
+	//------------------------------------
+	{
+		displayName: 'Return All Terms',
+		name: 'returnAll',
+		type: 'boolean',
+		default: false,
+		description: 'Whether to return all results or only up to a given limit',
+		displayOptions: {
+			show: {
+				resource: ['customer'],
+				operation: ['getAllTerms'],
+			},
+		},
+	},
+	{
+		displayName: 'Limit',
+		name: 'limit',
+		type: 'number',
+		default: 50,
+		description: 'Max number of results to return',
+		typeOptions: {
+			minValue: 1,
+			maxValue: 1000,
+		},
+		displayOptions: {
+			show: {
+				resource: ['customer'],
+				operation: ['getAllTerms'],
+				returnAll: [true],
+			},
+		},
+	},
+	{
+		displayName: 'Filters',
+		name: 'filters',
+		type: 'collection',
+		placeholder: 'Add Field',
+		default: {},
+		options: [
+			{
+				displayName: 'Query',
+				name: 'query',
+				type: 'string',
+				default: '',
+				placeholder: "WHERE Metadata.LastUpdatedTime > '2021-01-01'",
+				description:
+					'The condition for selecting customers. See the <a href="https://developer.intuit.com/app/developer/qbo/docs/develop/explore-the-quickbooks-online-api/data-queries">guide</a> for supported syntax.',
+			},
+		],
+		displayOptions: {
+			show: {
+				resource: ['customer'],
+				operation: ['getAllTerms'],
+			},
+		},
 	},
 ];
